@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jednoduchá poker hra</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <a href="profil.html" class="profile-link">Profil</a>
+
+  <div class="game-container">
+    <div id="cards" class="cards-row"></div>
+
+    <div class="buttons-row">
+      <button id="drawBtn">Rozdat karty</button>
+      <button id="replaceBtn" disabled>Vyměnit karty</button>
+    </div>
+
+    <div class="score-row">
+      <div>Skóre: <span id="score">20</span></div>
+      <div>Sázka: <span id="bet">1</span></div>
+    </div>
+
+    <div id="result"></div>
+    <div id="change" class="change-score"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

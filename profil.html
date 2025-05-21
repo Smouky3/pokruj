@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Profil hráče</title>
+<link rel="stylesheet" href="style.css" />
+<style>
+  body {
+    background-color: #0b3d0b;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+  .profile-container {
+    background-color: #004400;
+    padding: 30px 40px;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 0 20px #00ff00aa;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #ffd700;
+    text-shadow: 0 0 8px #fff;
+  }
+  .rank {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  .bronze { background: #cd7f32; color: #2b1600; }
+  .silver { background: #c0c0c0; color: #222; }
+  .gold { background: #ffd700; color: #5a3a00; }
+  .platinum { background: #e5e4e2; color: #333; }
+  .diamond { background: #b9f2ff; color: #004d66; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #006600;
+    text-align: left;
+  }
+  th {
+    background-color: #006600;
+    font-weight: 700;
+  }
+  tr:hover {
+    background-color: #005500cc;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #aaffaa;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .back-link:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+
+<div class="profile-container">
+  <a href="index.html" class="back-link">← Zpět do hry</a>
+  <h1>Profil hráče</h1>
+
+  <div id="rank" class="rank">Načítám příčku...</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Statistika</th>
+        <th>Počet</th>
+      </tr>
+    </thead>
+    <tbody id="statsBody">
+      <!-- Naplní se JavaScriptem -->
+    </tbody>
+  </table>
+
+  <p style="margin-top: 30px; font-weight: 700; font-size: 18px; text-align:center;">
+    Skóre: <span id="scoreDisplay">0</span><br />
+    Aktuální sázka: <span id="betDisplay">1</span>
+  </p>
+</div>
+
+<script>
+  // Data uložená v localStorage (ukládá script.js)
+  const pokerStats = JSON.parse(localStorage.getItem("pokerStats")) || {
+    "Žádná kombinace": 0,
+    "Pár": 0,
+    "Dva páry": 0,
+    "Trojice": 0,
+    "Straight": 0,
+    "Flush": 0,
+    "Full House": 0,
+    "Poker (Čtveřice)": 0,
+    "Straight Flush": 0,
+    "Royal Flush": 0
+  };
+
+  let score = parseInt(localStorage.getItem("pokerScore")) || 20;
+  let bet = parseInt(localStorage.getItem("pokerBet")) || 1;
+
+  const statsBody = document.getElementById("statsBody");
+  const rankDiv = document.getElementById("rank");
+  const scoreDisplay = document.getElementById("scoreDisplay");
+  const betDisplay = document.getElementById("betDisplay");
+
+  // Určení příčky podle skóre
+  function getRank(score) {
+    if (score >= 3000) return { name: "Diamantový hráč", className: "diamond" };
+    if (score >= 2000) return { name: "Platinový hráč", className: "platinum" };
+    if (score >= 1000) return { name: "Zlatý hráč", className: "gold" };
+    if (score >= 500) return { name: "Stříbrný hráč", className: "silver" };
+    if (score >= 20) return { name: "Bronzový hráč", className: "bronze" };
+    return { name: "Začátečník", className: "" };
+  }
+
+  // Naplnění tabulky statistik
+  function fillStats() {
+    statsBody.innerHTML = "";
+    for (const [combo, count] of Object.entries(pokerStats)) {
+      const tr = document.createElement("tr");
+      const tdName = document.createElement("td");
+      const tdCount = document.createElement("td");
+
+      tdName.textContent = combo;
+      tdCount.textContent = count;
+
+      tr.appendChild(tdName);
+      tr.appendChild(tdCount);
+      statsBody.appendChild(tr);
+    }
+  }
+
+  function updateProfile() {
+    fillStats();
+
+    const rank = getRank(score);
+    rankDiv.textContent = rank.name;
+    rankDiv.className = "rank " + rank.className;
+
+    scoreDisplay.textContent = score;
+    betDisplay.textContent = bet;
+  }
+
+  updateProfile();
+</script>
+
+</body>
+</html>
