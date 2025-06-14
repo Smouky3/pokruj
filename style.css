@@ -10,7 +10,7 @@ body {
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  justify-content: flex-start; /* aby nezačínal úplně nahoře */
+  justify-content: flex-start;
   box-sizing: border-box;
   position: relative;
 }
@@ -33,13 +33,31 @@ body {
   background-color: #4caf50;
 }
 
+.login-link {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background-color: #2e7d32;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+  transition: background-color 0.3s;
+  z-index: 10;
+}
+.login-link:hover {
+  background-color: #4caf50;
+}
+
 .site-title {
   position: fixed;
-  top: 10px;          /* velmi vysoko */
-  left: 50%;          /* vystředěno horizontálně */
+  top: 10px;
+  left: 50%;
   transform: translateX(-50%);
   font-family: 'Montserrat', sans-serif;
-  font-size: 96px;    /* větší písmo */
+  font-size: 96px;
   font-weight: 900;
   color: #2a5d2a;
   -webkit-text-stroke: 2px #ffd700;
@@ -49,14 +67,14 @@ body {
     2px 2px 4px rgba(0,0,0,0.5),
     0 0 5px #ffd700;
   margin: 0;
-  z-index: 20;        /* nad vším ostatním */
+  z-index: 20;
 }
 
 .game-container {
   text-align: center;
   max-width: 600px;
   width: 100%;
-  margin-top: 40px; /* přidána mezera od nápisu */
+  margin-top: 40px;
   margin-bottom: 0;
 }
 
