@@ -10,6 +10,7 @@
 
   <a href="profil.html" class="profile-link">Profil</a>
   <a href="login.html" class="login-link">Přihlásit se / Registrovat</a>
+  <button id="logoutBtn" style="display:none; position: fixed; top: 15px; right: 15px; padding: 10px 16px; background-color: #a52a2a; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; z-index: 11;">Odhlásit se</button>
 
   <div class="site-title">Pokruj</div>
 
@@ -41,7 +42,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // Firebase config s opravou storageBucket
     const firebaseConfig = {
       apiKey: "AIzaSyCZQvkYcZ3SJKjgxZ0stzdS9y-h3QP4Zzs",
       authDomain: "pokruj-b111c.firebaseapp.com",
@@ -57,14 +57,25 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
+    const logoutBtn = document.getElementById('logoutBtn');
+    const loginLink = document.querySelector('.login-link');
+
     auth.onAuthStateChanged(user => {
-      const loginLink = document.querySelector('.login-link');
       if (user) {
         loginLink.style.display = 'none';
+        logoutBtn.style.display = 'inline-block';
       } else {
         loginLink.style.display = 'block';
+        logoutBtn.style.display = 'none';
       }
     });
+
+    logoutBtn.onclick = () => {
+      auth.signOut().then(() => {
+        alert('Byl jste odhlášen.');
+        window.location.href = 'login.html';
+      });
+    };
   </script>
 
   <script src="script.js"></script>
