@@ -1,16 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap');
-
 body {
   background-color: #2a5d2a;
   margin: 0;
-  padding-top: 120px; /* prostor pro fixní nápis nahoře */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  justify-content: flex-start;
+  justify-content: center;
+  padding: 20px;
   box-sizing: border-box;
   position: relative;
 }
@@ -36,7 +34,7 @@ body {
 .login-link {
   position: fixed;
   top: 15px;
-  right: 15px;
+  left: 100px;
   background-color: #2e7d32;
   color: white;
   padding: 10px 16px;
@@ -51,49 +49,28 @@ body {
   background-color: #4caf50;
 }
 
-.site-title {
-  position: fixed;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 96px;
-  font-weight: 900;
-  color: #2a5d2a;
-  -webkit-text-stroke: 2px #ffd700;
-  text-stroke: 2px #ffd700;
-  user-select: none;
-  text-shadow:
-    2px 2px 4px rgba(0,0,0,0.5),
-    0 0 5px #ffd700;
-  margin: 0;
-  z-index: 20;
-}
-
 .game-container {
   text-align: center;
   max-width: 600px;
   width: 100%;
-  margin-top: 40px;
-  margin-bottom: 0;
 }
 
 .cards-row {
   display: flex;
   justify-content: center;
   gap: 12px;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
   flex-wrap: nowrap;
 }
 
 .card {
-  width: 100px;
-  height: 140px;
-  border-radius: 12px;
+  width: 70px;
+  height: 100px;
+  border-radius: 10px;
   background-color: white;
   color: black;
   font-weight: 700;
-  font-size: 48px;
+  font-size: 32px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -101,27 +78,24 @@ body {
   user-select: none;
   box-shadow: 0 5px 10px rgba(0,0,0,0.3);
   position: relative;
-  transition: box-shadow 0.2s, border-color 0.2s;
-  border: 3px solid transparent;
-  box-sizing: border-box;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .card.selected {
-  box-shadow: 0 0 25px 6px #4caf50;
-  border-color: #4caf50;
-  background-color: #d4f8d4;
+  box-shadow: 0 0 15px 3px #4caf50;
+  border: 2px solid #4caf50;
 }
 
 .buttons-row {
   display: flex;
   justify-content: center;
   gap: 20px;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
 }
 
 button {
-  padding: 14px 30px;
-  font-size: 22px;
+  padding: 15px 28px;
+  font-size: 20px;
   font-weight: 600;
   border: none;
   border-radius: 8px;
@@ -147,25 +121,22 @@ button:hover:not(:disabled) {
   justify-content: center;
   gap: 30px;
   flex-wrap: wrap;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  margin-bottom: 4px;
+  margin-bottom: 12px;
 }
 
 #result {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   min-height: 28px;
-  height: 28px;
   margin-bottom: 6px;
 }
 
 .change-score {
-  font-size: 18px;
+  font-size: 20px;
   font-style: italic;
   min-height: 22px;
-  height: 22px;
-  margin-bottom: 10px;
 }
 
 /* Jackpot box */
@@ -191,7 +162,7 @@ button:hover:not(:disabled) {
 }
 
 .jackpot-amount {
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 700;
   color: #ffd700;
   text-shadow: 0 0 10px #fff000;
@@ -255,5 +226,18 @@ tr:hover {
   font-size: 16px;
 }
 .back-link:hover {
+  text-decoration: underline;
+}
+
+/* Odkaz pro přihlášení v profilu */
+.login-link-profile {
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+  color: #aaffaa;
+  font-weight: 600;
+  text-decoration: none;
+}
+.login-link-profile:hover {
   text-decoration: underline;
 }
