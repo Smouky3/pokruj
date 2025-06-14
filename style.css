@@ -34,7 +34,7 @@ body {
 .login-link {
   position: fixed;
   top: 15px;
-  left: 100px;
+  left: 120px;
   background-color: #2e7d32;
   color: white;
   padding: 10px 16px;
@@ -166,78 +166,4 @@ button:hover:not(:disabled) {
   font-weight: 700;
   color: #ffd700;
   text-shadow: 0 0 10px #fff000;
-}
-
-/* Styl pro profil.html */
-.profile-container {
-  background-color: #004400;
-  padding: 30px 40px;
-  border-radius: 12px;
-  max-width: 500px;
-  width: 100%;
-  box-shadow: 0 0 20px #00ff00aa;
-  margin-top: 40px;
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 25px;
-  color: #ffd700;
-  text-shadow: 0 0 8px #fff;
-}
-
-.rank {
-  text-align: center;
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 30px;
-  padding: 10px;
-  border-radius: 8px;
-}
-.bronze { background: #cd7f32; color: #2b1600; }
-.silver { background: #c0c0c0; color: #222; }
-.gold { background: #ffd700; color: #5a3a00; }
-.platinum { background: #e5e4e2; color: #333; }
-.diamond { background: #b9f2ff; color: #004d66; }
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-th, td {
-  padding: 10px 14px;
-  border-bottom: 1px solid #006600;
-  text-align: left;
-}
-th {
-  background-color: #006600;
-  font-weight: 700;
-}
-tr:hover {
-  background-color: #005500cc;
-}
-
-.back-link {
-  display: inline-block;
-  margin-bottom: 20px;
-  color: #aaffaa;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 16px;
-}
-.back-link:hover {
-  text-decoration: underline;
-}
-
-/* Odkaz pro přihlášení v profilu */
-.login-link-profile {
-  display: block;
-  margin-top: 20px;
-  text-align: center;
-  color: #aaffaa;
-  font-weight: 600;
-  text-decoration: none;
-}
-.login-link-profile:hover {
-  text-decoration: underline;
 }
