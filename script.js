@@ -49,7 +49,7 @@ function shuffleDeck() {
 function dealCards() {
   createDeck();
   shuffleDeck();
-  hand = deck.splice(0, 5); // Vezmeme 5 karet z horní části balíčku
+  hand = deck.splice(0, 5);
   selectedIndices = [];
   displayCards();
   replaceBtn.disabled = false;
@@ -84,7 +84,7 @@ function toggleCard(index) {
 function replaceCards() {
   for (let i = 0; i < hand.length; i++) {
     if (!selectedIndices.includes(i)) {
-      hand[i] = deck.pop(); // Vezmeme novou kartu z balíčku
+      hand[i] = deck.pop();
     }
   }
 
@@ -93,14 +93,15 @@ function replaceCards() {
   drawBtn.disabled = false;
 
   const evaluation = evaluateHand(hand);
-
-  // Přidání 1% sázky do jackpotu
-  const jackpotContribution = Math.floor(bet * 0.01);
-  jackpot += jackpotContribution;
-
   let payout = calculatePayout(evaluation);
 
-  // Výhra jackpotu
+  // Jackpot +50 % z výhry (pokud výhra > 0)
+  if (payout > 0) {
+    const jackpotContribution = Math.floor(payout * 0.5);
+    jackpot += jackpotContribution;
+  }
+
+  // Jackpot výhra při Poker (Čtveřice)
   if (evaluation === "Poker (Čtveřice)") {
     payout += jackpot;
     changeDisplay.textContent += ` + JACKPOT ${jackpot}! 🎉`;
@@ -114,7 +115,6 @@ function replaceCards() {
   localStorage.setItem("pokerScore", score);
   localStorage.setItem("pokerJackpot", jackpot);
 
-  // Úprava sázky podle skóre
   if (score >= 3000) bet = 50;
   else if (score >= 2000) bet = 25;
   else if (score >= 1000) bet = 10;
