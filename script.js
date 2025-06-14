@@ -11,6 +11,7 @@ const result = document.getElementById("result");
 const scoreDisplay = document.getElementById("score");
 const betDisplay = document.getElementById("bet");
 const changeDisplay = document.getElementById("change");
+const jackpotDisplay = document.getElementById("jackpotDisplay");
 
 let pokerStats = JSON.parse(localStorage.getItem("pokerStats")) || {
   "Žádná kombinace": 0,
@@ -27,6 +28,7 @@ let pokerStats = JSON.parse(localStorage.getItem("pokerStats")) || {
 
 let score = parseInt(localStorage.getItem("pokerScore")) || 20;
 let bet = parseInt(localStorage.getItem("pokerBet")) || 1;
+let jackpot = parseInt(localStorage.getItem("pokerJackpot")) || 0;
 
 function createDeck() {
   deck = [];
@@ -64,12 +66,7 @@ function displayCards() {
     cardEl.textContent = `${card.value}${card.suit}`;
     if (selectedIndices.includes(index)) cardEl.classList.add("selected");
 
-    if (card.suit === '♥' || card.suit === '♦') {
-      cardEl.style.color = 'red';
-    } else {
-      cardEl.style.color = 'black';
-    }
-
+    cardEl.style.color = (card.suit === '♥' || card.suit === '♦') ? 'red' : 'black';
     cardEl.onclick = () => toggleCard(index);
     cardsDiv.appendChild(cardEl);
   });
@@ -85,68 +82,69 @@ function toggleCard(index) {
 }
 
 function replaceCards() {
-  // Pokud není označena žádná karta, vymění se všechny karty
   if (selectedIndices.length === 0) {
     for (let i = 0; i < hand.length; i++) {
       hand[i] = deck.pop();
     }
   } else {
-    // Vyměň pouze neoznačené karty
     for (let i = 0; i < hand.length; i++) {
       if (!selectedIndices.includes(i)) {
         hand[i] = deck.pop();
       }
     }
   }
+
   displayCards();
   replaceBtn.disabled = true;
   drawBtn.disabled = false;
 
-  // Vyhodnotíme ruku a upravíme skóre
-  let evaluation = evaluateHand(hand);
+  const evaluation = evaluateHand(hand);
+
+  // Přidání 1% do jackpotu
+  const jackpotContribution = Math.floor(bet * 0.01);
+  jackpot += jackpotContribution;
+
   let payout = calculatePayout(evaluation);
+
+  if (evaluation === "Poker (Čtveřice)") {
+    payout += jackpot;
+    changeDisplay.textContent += ` + JACKPOT ${jackpot}! 🎉`;
+    jackpot = 0;
+  }
+
   score += payout;
 
-  // Aktualizuj statistiky
   pokerStats[evaluation] = (pokerStats[evaluation] || 0) + 1;
-
-  // Ulož vše do localStorage
   localStorage.setItem("pokerStats", JSON.stringify(pokerStats));
   localStorage.setItem("pokerScore", score);
+  localStorage.setItem("pokerJackpot", jackpot);
 
   // Aktualizace sázky podle skóre
-  if (score >= 3000) {
-    bet = 50;
-  } else if (score >= 2000) {
-    bet = 25;
-  } else if (score >= 1000) {
-    bet = 10;
-  } else if (score >= 500) {
-    bet = 5;
-  } else {
-    bet = 1;
-  }
+  if (score >= 3000) bet = 50;
+  else if (score >= 2000) bet = 25;
+  else if (score >= 1000) bet = 10;
+  else if (score >= 500) bet = 5;
+  else bet = 1;
   localStorage.setItem("pokerBet", bet);
 
   scoreDisplay.textContent = score;
   betDisplay.textContent = bet;
+  jackpotDisplay.textContent = jackpot;
 
-  let sign = payout >= 0 ? "+" : "";
+  const sign = payout >= 0 ? "+" : "";
   result.textContent = `${evaluation}! (${sign}${payout})`;
   changeDisplay.textContent = `Změna skóre: ${sign}${payout}`;
 }
 
 function evaluateHand(hand) {
   const valueMap = {'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14};
-  let valuesNum = hand.map(card => valueMap[card.value]).sort((a,b) => a-b);
+  let valuesNum = hand.map(card => valueMap[card.value]).sort((a,b) => a - b);
   let suits = hand.map(card => card.suit);
-
   let counts = {};
-  valuesNum.forEach(v => counts[v] = (counts[v]||0)+1);
+  valuesNum.forEach(v => counts[v] = (counts[v] || 0) + 1);
   let countValues = Object.values(counts).sort((a,b) => b - a);
-
   let isFlush = suits.every(s => s === suits[0]);
-  let isStraight = valuesNum.every((v,i,a) => i === 0 || v === a[i-1] + 1) || 
+  let isStraight = valuesNum.every((v,i,a) => i === 0 || v === a[i-1] + 1) ||
                    (JSON.stringify(valuesNum) === JSON.stringify([2,3,4,5,14]));
 
   if (isStraight && isFlush && Math.max(...valuesNum) === 14) return "Royal Flush";
@@ -174,8 +172,7 @@ function calculatePayout(evaluation) {
     "Straight Flush": 50,
     "Royal Flush": 100
   };
-  let multiplier = payoutTable[evaluation] || 0;
-  return Math.round(multiplier * bet);
+  return Math.round((payoutTable[evaluation] || 0) * bet);
 }
 
 drawBtn.onclick = dealCards;
@@ -184,5 +181,6 @@ replaceBtn.onclick = replaceCards;
 replaceBtn.disabled = true;
 scoreDisplay.textContent = score;
 betDisplay.textContent = bet;
+jackpotDisplay.textContent = jackpot;
 result.textContent = '';
 changeDisplay.textContent = '';
