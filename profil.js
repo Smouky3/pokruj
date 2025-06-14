@@ -20,16 +20,25 @@ function fillStats() {
   statsBody.innerHTML = "";
   for (const [combo, count] of Object.entries(pokerStats)) {
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${combo}</td><td>${count}</td>`;
+    const tdName = document.createElement("td");
+    const tdCount = document.createElement("td");
+
+    tdName.textContent = combo;
+    tdCount.textContent = count;
+
+    tr.appendChild(tdName);
+    tr.appendChild(tdCount);
     statsBody.appendChild(tr);
   }
 }
 
 function updateProfile() {
   fillStats();
+
   const rank = getRank(score);
   rankDiv.textContent = rank.name;
   rankDiv.className = "rank " + rank.className;
+
   scoreDisplay.textContent = score;
   betDisplay.textContent = bet;
 }
