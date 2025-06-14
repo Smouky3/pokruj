@@ -65,7 +65,6 @@ function displayCards() {
     cardEl.className = "card";
     cardEl.textContent = `${card.value}${card.suit}`;
     if (selectedIndices.includes(index)) cardEl.classList.add("selected");
-
     cardEl.style.color = (card.suit === '♥' || card.suit === '♦') ? 'red' : 'black';
     cardEl.onclick = () => toggleCard(index);
     cardsDiv.appendChild(cardEl);
@@ -95,7 +94,7 @@ function replaceCards() {
   const evaluation = evaluateHand(hand);
   let payout = calculatePayout(evaluation);
 
-  // Jackpot z výhry: 10 %
+  // Jackpot: 10 % z výhry
   if (payout > 0) {
     const jackpotContribution = Math.floor(payout * 0.1);
     jackpot += jackpotContribution;
@@ -128,7 +127,7 @@ function replaceCards() {
 
   const sign = payout >= 0 ? "+" : "";
   result.textContent = `${evaluation}! (${sign}${payout})`;
-  changeDisplay.textContent = `Změna skóre: ${sign}${payout}`;
+  // changeDisplay.textContent = `Změna skóre: ${sign}${payout}`; // Skryto dle požadavku
 }
 
 function evaluateHand(hand) {
@@ -174,9 +173,11 @@ function calculatePayout(evaluation) {
 
   let multiplier = payoutTable[evaluation] ?? 0;
   let payout = Math.round(multiplier * bet);
+
   if (payout < payoutTable[evaluation]) {
     payout = payoutTable[evaluation];
   }
+
   return payout;
 }
 
