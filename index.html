@@ -59,14 +59,46 @@
 
     const logoutBtn = document.getElementById('logoutBtn');
     const loginLink = document.querySelector('.login-link');
+    const scoreDisplay = document.getElementById('score');
+    const betDisplay = document.getElementById('bet');
+    const jackpotDisplay = document.getElementById('jackpotDisplay');
 
-    auth.onAuthStateChanged(user => {
+    // Výchozí hodnoty, použité před načtením dat
+    let score = 20;
+    let bet = 1;
+    let jackpot = 0;
+
+    auth.onAuthStateChanged(async user => {
       if (user) {
         loginLink.style.display = 'none';
         logoutBtn.style.display = 'inline-block';
+
+        // Načtení dat uživatele z Firestore
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+          const data = userDoc.data();
+          score = data.score || 20;
+          bet = data.bet || 1;
+          jackpot = data.jackpot || 0;
+        } else {
+          await db.collection('users').doc(user.uid).set({ score, bet, jackpot });
+        }
+
+        scoreDisplay.textContent = score;
+        betDisplay.textContent = bet;
+        jackpotDisplay.textContent = jackpot;
+
       } else {
         loginLink.style.display = 'block';
         logoutBtn.style.display = 'none';
+
+        score = parseInt(localStorage.getItem("pokerScore")) || 20;
+        bet = parseInt(localStorage.getItem("pokerBet")) || 1;
+        jackpot = parseInt(localStorage.getItem("pokerJackpot")) || 0;
+
+        scoreDisplay.textContent = score;
+        betDisplay.textContent = bet;
+        jackpotDisplay.textContent = jackpot;
       }
     });
 
