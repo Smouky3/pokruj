@@ -100,7 +100,6 @@ function replaceCards() {
 
   const evaluation = evaluateHand(hand);
 
-  // Přidání 1% do jackpotu
   const jackpotContribution = Math.floor(bet * 0.01);
   jackpot += jackpotContribution;
 
@@ -119,7 +118,6 @@ function replaceCards() {
   localStorage.setItem("pokerScore", score);
   localStorage.setItem("pokerJackpot", jackpot);
 
-  // Aktualizace sázky podle skóre
   if (score >= 3000) bet = 50;
   else if (score >= 2000) bet = 25;
   else if (score >= 1000) bet = 10;
@@ -184,3 +182,4 @@ betDisplay.textContent = bet;
 jackpotDisplay.textContent = jackpot;
 result.textContent = '';
 changeDisplay.textContent = '';
+
