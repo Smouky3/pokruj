@@ -1,6 +1,17 @@
-const pokerStats = JSON.parse(localStorage.getItem("pokerStats")) || {};
-const score = parseInt(localStorage.getItem("pokerScore")) || 0;
-const bet = parseInt(localStorage.getItem("pokerBet")) || 1;
+const firebaseConfig = {
+  apiKey: "AIzaSyCZQvkYcZ3SJKjgxZ0stzdS9y-h3QP4Zzs",
+  authDomain: "pokruj-b111c.firebaseapp.com",
+  projectId: "pokruj-b111c",
+  storageBucket: "pokruj-b111c.appspot.com",
+  messagingSenderId: "221823135309",
+  appId: "1:221823135309:web:f0dd15201d9488be5f3604",
+  measurementId: "G-NNB0QJ1TT9"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
 
 const statsBody = document.getElementById("statsBody");
 const rankDiv = document.getElementById("rank");
@@ -16,9 +27,9 @@ function getRank(score) {
   return { name: "Začátečník", className: "" };
 }
 
-function fillStats() {
+function fillStats(stats) {
   statsBody.innerHTML = "";
-  for (const [combo, count] of Object.entries(pokerStats)) {
+  for (const [combo, count] of Object.entries(stats)) {
     const tr = document.createElement("tr");
     const tdName = document.createElement("td");
     const tdCount = document.createElement("td");
@@ -32,15 +43,35 @@ function fillStats() {
   }
 }
 
-function updateProfile() {
-  fillStats();
+auth.onAuthStateChanged(async (user) => {
+  if (!user) {
+    alert("Musíš být přihlášený, abys viděl profil.");
+    window.location.href = "login.html";
+    return;
+  }
+
+  const userDoc = await db.collection("users").doc(user.uid).get();
+
+  if (!userDoc.exists) {
+    alert("Profil nenalezen, hrajte hru a data se uloží.");
+    scoreDisplay.textContent = 20;
+    betDisplay.textContent = 1;
+    fillStats({});
+    rankDiv.textContent = "Začátečník";
+    return;
+  }
+
+  const data = userDoc.data();
+
+  const score = data.score || 20;
+  const bet = data.bet || 1;
+  const stats = data.stats || {};
+
+  scoreDisplay.textContent = score;
+  betDisplay.textContent = bet;
+  fillStats(stats);
 
   const rank = getRank(score);
   rankDiv.textContent = rank.name;
   rankDiv.className = "rank " + rank.className;
-
-  scoreDisplay.textContent = score;
-  betDisplay.textContent = bet;
-}
-
-updateProfile();
+});
