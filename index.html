@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Jednoduchá poker hra</title>
+  <title>Pokruj - poker hra</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
   <a href="profil.html" class="profile-link">Profil</a>
 
-  <h1 class="site-title">Pokruj</h1>
+  <div class="site-title">Pokruj</div>
 
   <div class="jackpot-box">
     <div class="jackpot-title">JACKPOT</div>
@@ -33,6 +34,34 @@
     <div id="change" class="change-score"></div>
   </div>
 
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCZQvkYcZ3SJKjgxZ0stzdS9y-h3QP4Zzs",
+  authDomain: "pokruj-b111c.firebaseapp.com",
+  projectId: "pokruj-b111c",
+  storageBucket: "pokruj-b111c.firebasestorage.app",
+  messagingSenderId: "221823135309",
+  appId: "1:221823135309:web:f0dd15201d9488be5f3604",
+  measurementId: "G-NNB0QJ1TT9"
+};
+
+    // Inicializace Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Nyní můžeš zde přidat další kód hry nebo importovat externí script.js atd.
+  </script>
+
   <script src="script.js"></script>
+
 </body>
 </html>
+
