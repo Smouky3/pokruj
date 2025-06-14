@@ -1,53 +1,37 @@
-// načtení elementů
-const gamesPlayedDisplay = document.getElementById('gamesPlayed');
-const scoreDisplay = document.getElementById('score');
-const rankDisplay = document.getElementById('rank');
-const winStatsTableBody = document.getElementById('winStatsTableBody');
+const pokerStats = JSON.parse(localStorage.getItem("pokerStats")) || {};
+const score = parseInt(localStorage.getItem("pokerScore")) || 0;
+const bet = parseInt(localStorage.getItem("pokerBet")) || 1;
 
-let playerScore = parseInt(localStorage.getItem('playerScore')) || 20;
-let gamesPlayed = parseInt(localStorage.getItem('gamesPlayed')) || 0;
-let winStats = JSON.parse(localStorage.getItem('winStats')) || {
-  "Royal Flush": 0,
-  "Straight Flush": 0,
-  "Čtveřice": 0,
-  "Full House": 0,
-  "Flush": 0,
-  "Postupka": 0,
-  "Trojek": 0,
-  "Dvě dvojice": 0,
-  "Dvojice": 0,
-  "Žádná": 0
-};
+const statsBody = document.getElementById("statsBody");
+const rankDiv = document.getElementById("rank");
+const scoreDisplay = document.getElementById("scoreDisplay");
+const betDisplay = document.getElementById("betDisplay");
 
 function getRank(score) {
-  if (score >= 5000) return 'Diamantový';
-  if (score >= 2000) return 'Zlatý';
-  if (score >= 1000) return 'Stříbrný';
-  if (score >= 500) return 'Bronzový';
-  return 'Začátečník';
+  if (score >= 3000) return { name: "Diamantový hráč", className: "diamond" };
+  if (score >= 2000) return { name: "Platinový hráč", className: "platinum" };
+  if (score >= 1000) return { name: "Zlatý hráč", className: "gold" };
+  if (score >= 500) return { name: "Stříbrný hráč", className: "silver" };
+  if (score >= 20) return { name: "Bronzový hráč", className: "bronze" };
+  return { name: "Začátečník", className: "" };
 }
 
-function updateProfile() {
-  gamesPlayedDisplay.textContent = gamesPlayed;
-  scoreDisplay.textContent = playerScore;
-  rankDisplay.textContent = getRank(playerScore);
-
-  // vyprázdnit tabulku
-  winStatsTableBody.innerHTML = '';
-
-  for (const [combination, count] of Object.entries(winStats)) {
-    const row = document.createElement('tr');
-
-    const combCell = document.createElement('td');
-    combCell.textContent = combination;
-    row.appendChild(combCell);
-
-    const countCell = document.createElement('td');
-    countCell.textContent = count;
-    row.appendChild(countCell);
-
-    winStatsTableBody.appendChild(row);
+function fillStats() {
+  statsBody.innerHTML = "";
+  for (const [combo, count] of Object.entries(pokerStats)) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${combo}</td><td>${count}</td>`;
+    statsBody.appendChild(tr);
   }
 }
 
-document.addEventListener('DOMContentLoaded', updateProfile);
+function updateProfile() {
+  fillStats();
+  const rank = getRank(score);
+  rankDiv.textContent = rank.name;
+  rankDiv.className = "rank " + rank.className;
+  scoreDisplay.textContent = score;
+  betDisplay.textContent = bet;
+}
+
+updateProfile();
