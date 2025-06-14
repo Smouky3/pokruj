@@ -106,7 +106,8 @@ button:hover:not(:disabled) {
 .score-row {
   display: flex;
   justify-content: center;
-  gap: 40px;
+  gap: 30px;
+  flex-wrap: wrap;
   font-size: 20px;
   font-weight: 700;
   margin-bottom: 12px;
@@ -123,4 +124,32 @@ button:hover:not(:disabled) {
   font-size: 18px;
   font-style: italic;
   min-height: 22px;
+}
+
+.jackpot-box {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #004d00;
+  color: #ffffff;
+  padding: 16px 22px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px #00ff00aa;
+  text-align: center;
+  z-index: 10;
+}
+
+.jackpot-title {
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  text-shadow: 0 0 5px #00ff00;
+}
+
+.jackpot-amount {
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffd700;
+  text-shadow: 0 0 10px #fff000;
 }
