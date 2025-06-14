@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pokruj - Přihlášení / Registrace</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="login-container">
+    <h2>Registrace / Přihlášení</h2>
+
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Heslo" />
+    <button id="registerBtn">Registrovat</button>
+    <button id="loginBtn">Přihlásit se</button>
+
+    <div id="message" style="margin-top: 15px; color: #ffd700; font-weight: 700;"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // TODO: nahraď svým Firebase configem
+    const firebaseConfig = {
+      apiKey: "TADY_TVŮJ_API_KEY",
+      authDomain: "TADY_TVŮJ_AUTH_DOMAIN",
+      projectId: "TADY_TVŮJ_PROJECT_ID",
+      storageBucket: "TADY_TVŮJ_STORAGE_BUCKET",
+      messagingSenderId: "TADY_TVŮJ_MESSAGING_SENDER_ID",
+      appId: "TADY_TVŮJ_APP_ID",
+      measurementId: "TADY_TVŮJ_MEASUREMENT_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+  </script>
+
+  <script src="login.js"></script>
+
+</body>
+</html>
