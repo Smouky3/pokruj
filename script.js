@@ -116,10 +116,9 @@ async function replaceCards() {
   // Aktualizace statistik
   pokerStats[evaluation] = (pokerStats[evaluation] || 0) + 1;
 
-  // Uložení dat
   localStorage.setItem("pokerStats", JSON.stringify(pokerStats));
 
-  // Uložíme skóre do Firestore, pokud je uživatel přihlášený
+  // Uložení do Firestore, pokud je uživatel přihlášený
   const user = auth.currentUser;
   if (user) {
     const userRef = db.collection('users').doc(user.uid);
@@ -128,7 +127,6 @@ async function replaceCards() {
     if (userDoc.exists) {
       currentStats = userDoc.data().stats || {};
     }
-
     currentStats[evaluation] = (currentStats[evaluation] || 0) + 1;
 
     await userRef.set({
