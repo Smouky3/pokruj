@@ -53,25 +53,4 @@ auth.onAuthStateChanged(async (user) => {
   const userDoc = await db.collection("users").doc(user.uid).get();
 
   if (!userDoc.exists) {
-    alert("Profil nenalezen, hrajte hru a data se uloží.");
-    scoreDisplay.textContent = 20;
-    betDisplay.textContent = 1;
-    fillStats({});
-    rankDiv.textContent = "Začátečník";
-    return;
-  }
-
-  const data = userDoc.data();
-
-  const score = data.score || 20;
-  const bet = data.bet || 1;
-  const stats = data.stats || {};
-
-  scoreDisplay.textContent = score;
-  betDisplay.textContent = bet;
-  fillStats(stats);
-
-  const rank = getRank(score);
-  rankDiv.textContent = rank.name;
-  rankDiv.className = "rank " + rank.className;
-});
+    alert("Profil nenalezen, hrajte hru
