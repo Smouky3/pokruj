@@ -63,7 +63,6 @@
     const betDisplay = document.getElementById('bet');
     const jackpotDisplay = document.getElementById('jackpotDisplay');
 
-    // Výchozí hodnoty, použité před načtením dat
     let score = 20;
     let bet = 1;
     let jackpot = 0;
@@ -73,7 +72,6 @@
         loginLink.style.display = 'none';
         logoutBtn.style.display = 'inline-block';
 
-        // Načtení dat uživatele z Firestore
         const userDoc = await db.collection('users').doc(user.uid).get();
         if (userDoc.exists) {
           const data = userDoc.data();
@@ -87,7 +85,6 @@
         scoreDisplay.textContent = score;
         betDisplay.textContent = bet;
         jackpotDisplay.textContent = jackpot;
-
       } else {
         loginLink.style.display = 'block';
         logoutBtn.style.display = 'none';
