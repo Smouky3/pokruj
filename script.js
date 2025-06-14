@@ -28,7 +28,6 @@ let pokerStats = JSON.parse(localStorage.getItem("pokerStats")) || {
   "Royal Flush": 0
 };
 
-// Výchozí hodnoty; při přihlášení se přepíší z Firestore
 let score = parseInt(localStorage.getItem("pokerScore")) || 20;
 let bet = parseInt(localStorage.getItem("pokerBet")) || 1;
 let jackpot = parseInt(localStorage.getItem("pokerJackpot")) || 0;
