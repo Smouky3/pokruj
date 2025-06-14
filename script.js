@@ -49,7 +49,7 @@ function shuffleDeck() {
 function dealCards() {
   createDeck();
   shuffleDeck();
-  hand = deck.splice(0, 5);
+  hand = deck.splice(0, 5); // Vezmeme 5 karet z horní části balíčku
   selectedIndices = [];
   displayCards();
   replaceBtn.disabled = false;
@@ -82,15 +82,9 @@ function toggleCard(index) {
 }
 
 function replaceCards() {
-  if (selectedIndices.length === 0) {
-    for (let i = 0; i < hand.length; i++) {
-      hand[i] = deck.pop();
-    }
-  } else {
-    for (let i = 0; i < hand.length; i++) {
-      if (!selectedIndices.includes(i)) {
-        hand[i] = deck.pop();
-      }
+  for (let i = 0; i < hand.length; i++) {
+    if (!selectedIndices.includes(i)) {
+      hand[i] = deck.pop(); // Vezmeme novou kartu z balíčku
     }
   }
 
@@ -100,11 +94,13 @@ function replaceCards() {
 
   const evaluation = evaluateHand(hand);
 
+  // Přidání 1% sázky do jackpotu
   const jackpotContribution = Math.floor(bet * 0.01);
   jackpot += jackpotContribution;
 
   let payout = calculatePayout(evaluation);
 
+  // Výhra jackpotu
   if (evaluation === "Poker (Čtveřice)") {
     payout += jackpot;
     changeDisplay.textContent += ` + JACKPOT ${jackpot}! 🎉`;
@@ -118,6 +114,7 @@ function replaceCards() {
   localStorage.setItem("pokerScore", score);
   localStorage.setItem("pokerJackpot", jackpot);
 
+  // Úprava sázky podle skóre
   if (score >= 3000) bet = 50;
   else if (score >= 2000) bet = 25;
   else if (score >= 1000) bet = 10;
@@ -135,15 +132,19 @@ function replaceCards() {
 }
 
 function evaluateHand(hand) {
-  const valueMap = {'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14};
-  let valuesNum = hand.map(card => valueMap[card.value]).sort((a,b) => a - b);
+  const valueMap = {
+    '2': 2, '3': 3, '4': 4, '5': 5, '6': 6,
+    '7': 7, '8': 8, '9': 9, '10': 10,
+    'J': 11, 'Q': 12, 'K': 13, 'A': 14
+  };
+  let valuesNum = hand.map(card => valueMap[card.value]).sort((a, b) => a - b);
   let suits = hand.map(card => card.suit);
   let counts = {};
   valuesNum.forEach(v => counts[v] = (counts[v] || 0) + 1);
-  let countValues = Object.values(counts).sort((a,b) => b - a);
+  let countValues = Object.values(counts).sort((a, b) => b - a);
   let isFlush = suits.every(s => s === suits[0]);
-  let isStraight = valuesNum.every((v,i,a) => i === 0 || v === a[i-1] + 1) ||
-                   (JSON.stringify(valuesNum) === JSON.stringify([2,3,4,5,14]));
+  let isStraight = valuesNum.every((v, i, a) => i === 0 || v === a[i - 1] + 1) ||
+    (JSON.stringify(valuesNum) === JSON.stringify([2, 3, 4, 5, 14]));
 
   if (isStraight && isFlush && Math.max(...valuesNum) === 14) return "Royal Flush";
   if (isStraight && isFlush) return "Straight Flush";
@@ -159,18 +160,26 @@ function evaluateHand(hand) {
 
 function calculatePayout(evaluation) {
   const payoutTable = {
-    "Žádná kombinace": -1,
-    "Pár": 1.5,
-    "Dva páry": 2,
-    "Trojice": 3,
-    "Straight": 4,
-    "Flush": 6,
-    "Full House": 9,
-    "Poker (Čtveřice)": 25,
-    "Straight Flush": 50,
-    "Royal Flush": 100
+    "Pár": 2,
+    "Dva páry": 4,
+    "Trojice": 6,
+    "Straight": 10,
+    "Flush": 15,
+    "Full House": 20,
+    "Poker (Čtveřice)": 50,
+    "Straight Flush": 100,
+    "Royal Flush": 500,
+    "Žádná kombinace": -1
   };
-  return Math.round((payoutTable[evaluation] || 0) * bet);
+
+  let multiplier = payoutTable[evaluation] ?? 0;
+  let payout = Math.round(multiplier * bet);
+
+  if (payout < payoutTable[evaluation]) {
+    payout = payoutTable[evaluation];
+  }
+
+  return payout;
 }
 
 drawBtn.onclick = dealCards;
