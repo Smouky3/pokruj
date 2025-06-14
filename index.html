@@ -9,6 +9,7 @@
 <body>
 
   <a href="profil.html" class="profile-link">Profil</a>
+  <a href="login.html" class="login-link">Přihlásit se / Registrovat</a>
 
   <div class="site-title">Pokruj</div>
 
@@ -51,17 +52,23 @@ const firebaseConfig = {
   measurementId: "G-NNB0QJ1TT9"
 };
 
-    // Inicializace Firebase
     firebase.initializeApp(firebaseConfig);
 
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // Nyní můžeš zde přidat další kód hry nebo importovat externí script.js atd.
+    // Kontrola přihlášení, skrýt odkaz na přihlášení pokud je uživatel přihlášený
+    auth.onAuthStateChanged(user => {
+      const loginLink = document.querySelector('.login-link');
+      if (user) {
+        loginLink.style.display = 'none';
+      } else {
+        loginLink.style.display = 'block';
+      }
+    });
   </script>
 
   <script src="script.js"></script>
 
 </body>
 </html>
-
