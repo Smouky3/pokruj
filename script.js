@@ -95,13 +95,13 @@ function replaceCards() {
   const evaluation = evaluateHand(hand);
   let payout = calculatePayout(evaluation);
 
-  // Jackpot +50 % z výhry (pokud výhra > 0)
+  // Jackpot z výhry: 10 %
   if (payout > 0) {
-    const jackpotContribution = Math.floor(payout * 0.5);
+    const jackpotContribution = Math.floor(payout * 0.1);
     jackpot += jackpotContribution;
   }
 
-  // Jackpot výhra při Poker (Čtveřice)
+  // Výhra jackpotu
   if (evaluation === "Poker (Čtveřice)") {
     payout += jackpot;
     changeDisplay.textContent += ` + JACKPOT ${jackpot}! 🎉`;
@@ -174,11 +174,9 @@ function calculatePayout(evaluation) {
 
   let multiplier = payoutTable[evaluation] ?? 0;
   let payout = Math.round(multiplier * bet);
-
   if (payout < payoutTable[evaluation]) {
     payout = payoutTable[evaluation];
   }
-
   return payout;
 }
 
