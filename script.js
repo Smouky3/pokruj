@@ -122,10 +122,20 @@ async function replaceCards() {
   // Uložíme skóre do Firestore, pokud je uživatel přihlášený
   const user = auth.currentUser;
   if (user) {
-    await db.collection('users').doc(user.uid).set({
+    const userRef = db.collection('users').doc(user.uid);
+    const userDoc = await userRef.get();
+    let currentStats = {};
+    if (userDoc.exists) {
+      currentStats = userDoc.data().stats || {};
+    }
+
+    currentStats[evaluation] = (currentStats[evaluation] || 0) + 1;
+
+    await userRef.set({
       score: score,
       bet: bet,
-      jackpot: jackpot
+      jackpot: jackpot,
+      stats: currentStats
     }, { merge: true });
   } else {
     localStorage.setItem("pokerScore", score);
