@@ -1,5 +1,5 @@
 body {
-  background-color: #2a5d2a; /* tmavě zelené pozadí */
+  background-color: #2a5d2a;
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: white;
@@ -126,6 +126,7 @@ button:hover:not(:disabled) {
   min-height: 22px;
 }
 
+/* Jackpot box */
 .jackpot-box {
   position: fixed;
   top: 20px;
