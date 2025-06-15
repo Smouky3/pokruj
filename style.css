@@ -1,5 +1,5 @@
 body {
-  background-color: #2a5d2a; /* tmavě zelené pozadí */
+  background-color: #2a5d2a;
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: white;
@@ -46,13 +46,13 @@ body {
 }
 
 .card {
-  width: 70px;
-  height: 100px;
+  width: 90px;
+  height: 130px;
   border-radius: 10px;
   background-color: white;
   color: black;
   font-weight: 700;
-  font-size: 32px;
+  font-size: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -60,29 +60,24 @@ body {
   user-select: none;
   box-shadow: 0 5px 10px rgba(0,0,0,0.3);
   position: relative;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: box-shadow 0.2s;
 }
 
 .card.selected {
-  box-shadow: 0 0 15px 3px #4caf50;
-  transform: translateY(-8px);
+  box-shadow: 0 0 25px 4px #4caf50;
   border: 2px solid #4caf50;
-}
-
-.card.red {
-  color: red;
 }
 
 .buttons-row {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 30px;
   margin-bottom: 15px;
 }
 
 button {
-  padding: 10px 22px;
-  font-size: 18px;
+  padding: 14px 28px;
+  font-size: 22px;
   font-weight: 600;
   border: none;
   border-radius: 8px;
@@ -106,21 +101,22 @@ button:hover:not(:disabled) {
 .score-row {
   display: flex;
   justify-content: center;
-  gap: 30px;
-  font-size: 20px;
+  gap: 40px;
+  flex-wrap: wrap;
+  font-size: 24px;
   font-weight: 700;
   margin-bottom: 12px;
 }
 
 #result {
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 700;
   min-height: 28px;
   margin-bottom: 6px;
 }
 
 .change-score {
-  font-size: 18px;
+  font-size: 20px;
   font-style: italic;
   min-height: 22px;
 }
@@ -140,7 +136,7 @@ button:hover:not(:disabled) {
 }
 
 .jackpot-title {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: bold;
   letter-spacing: 1px;
   margin-bottom: 6px;
@@ -148,7 +144,7 @@ button:hover:not(:disabled) {
 }
 
 .jackpot-amount {
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 700;
   color: #ffd700;
   text-shadow: 0 0 10px #fff000;
@@ -213,4 +209,23 @@ tr:hover {
 }
 .back-link:hover {
   text-decoration: underline;
+}
+
+/* Přihlašovací stránka */
+.login-link {
+  position: fixed;
+  top: 15px;
+  left: 120px;
+  background-color: #2e7d32;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+  transition: background-color 0.3s;
+  z-index: 10;
+}
+.login-link:hover {
+  background-color: #4caf50;
 }
