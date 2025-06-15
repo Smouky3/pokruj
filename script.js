@@ -95,8 +95,7 @@ function replaceCards() {
   const evaluation = evaluateHand(hand);
 
   const payout = calculatePayout(evaluation);
-  // Jackpot navyšujeme jen z kladné výhry, ne z mínusu
-  const jackpotContribution = Math.floor(Math.max(0, payout) * 0.1);
+  const jackpotContribution = Math.floor(payout * 0.1);
   jackpot += jackpotContribution;
 
   let finalPayout = payout;
@@ -128,7 +127,7 @@ function replaceCards() {
 
   const sign = finalPayout >= 0 ? "+" : "";
   result.textContent = `${evaluation}! (${sign}${finalPayout})`;
-  changeDisplay.textContent = ''; // nezobrazovat změnu skóre po vyhodnocení
+  changeDisplay.textContent = ''; // neukazovat změnu skóre po vyhodnocení
 }
 
 function evaluateHand(hand) {
