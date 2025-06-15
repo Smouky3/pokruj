@@ -72,23 +72,17 @@ body {
   user-select: none;
   box-shadow: 0 5px 10px rgba(0,0,0,0.3);
   position: relative;
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  box-sizing: border-box;
+  border: 2px solid transparent; /* Základní rámeček transparentní */
 }
 
-/* Fix: označené karty NEPOHÝBAJÍ se a mají viditelné zvýraznění */
 .card.selected {
   box-shadow: 0 0 15px 3px #4caf50;
-  border: 2px solid #4caf50;
-  transform: none !important; /* odstraní posuny */
+  border-color: #4caf50; /* Jen změní barvu rámečku */
+  transform: none !important;
   margin-top: 0 !important;
   position: relative;
-}
-
-.buttons-row {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 15px;
 }
 
 button {
