@@ -9,8 +9,6 @@
 <body>
 
   <a href="profil.html" class="profile-link">Profil</a>
-  <a href="login.html" class="login-link">Přihlásit se / Registrovat</a>
-  <button id="logoutBtn" style="display:none; position: fixed; top: 15px; right: 15px; padding: 10px 16px; background-color: #a52a2a; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; z-index: 11;">Odhlásit se</button>
 
   <div class="site-title">Pokruj</div>
 
@@ -35,77 +33,6 @@
     <div id="result"></div>
     <div id="change" class="change-score"></div>
   </div>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCZQvkYcZ3SJKjgxZ0stzdS9y-h3QP4Zzs",
-      authDomain: "pokruj-b111c.firebaseapp.com",
-      projectId: "pokruj-b111c",
-      storageBucket: "pokruj-b111c.appspot.com",
-      messagingSenderId: "221823135309",
-      appId: "1:221823135309:web:f0dd15201d9488be5f3604",
-      measurementId: "G-NNB0QJ1TT9"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    const logoutBtn = document.getElementById('logoutBtn');
-    const loginLink = document.querySelector('.login-link');
-    const scoreDisplay = document.getElementById('score');
-    const betDisplay = document.getElementById('bet');
-    const jackpotDisplay = document.getElementById('jackpotDisplay');
-
-    let score = 20;
-    let bet = 1;
-    let jackpot = 0;
-
-    auth.onAuthStateChanged(async user => {
-      if (user) {
-        loginLink.style.display = 'none';
-        logoutBtn.style.display = 'inline-block';
-
-        const userDoc = await db.collection('users').doc(user.uid).get();
-        if (userDoc.exists) {
-          const data = userDoc.data();
-          score = data.score || 20;
-          bet = data.bet || 1;
-          jackpot = data.jackpot || 0;
-        } else {
-          await db.collection('users').doc(user.uid).set({ score, bet, jackpot });
-        }
-
-        scoreDisplay.textContent = score;
-        betDisplay.textContent = bet;
-        jackpotDisplay.textContent = jackpot;
-      } else {
-        loginLink.style.display = 'block';
-        logoutBtn.style.display = 'none';
-
-        score = parseInt(localStorage.getItem("pokerScore")) || 20;
-        bet = parseInt(localStorage.getItem("pokerBet")) || 1;
-        jackpot = parseInt(localStorage.getItem("pokerJackpot")) || 0;
-
-        scoreDisplay.textContent = score;
-        betDisplay.textContent = bet;
-        jackpotDisplay.textContent = jackpot;
-      }
-    });
-
-    logoutBtn.onclick = () => {
-      auth.signOut().then(() => {
-        alert('Byl jste odhlášen.');
-        window.location.href = 'login.html';
-      });
-    };
-  </script>
 
   <script src="script.js"></script>
 
