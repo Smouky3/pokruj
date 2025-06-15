@@ -1,5 +1,3 @@
-// Předpokládáme, že 'auth' a 'db' jsou globálně dostupné z index.html
-
 const suits = ['♠', '♥', '♦', '♣'];
 const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 let deck = [];
@@ -28,7 +26,6 @@ let pokerStats = JSON.parse(localStorage.getItem("pokerStats")) || {
   "Royal Flush": 0
 };
 
-// Výchozí hodnoty; při přihlášení se přepíší z Firestore
 let score = parseInt(localStorage.getItem("pokerScore")) || 20;
 let bet = parseInt(localStorage.getItem("pokerBet")) || 1;
 let jackpot = parseInt(localStorage.getItem("pokerJackpot")) || 0;
@@ -68,6 +65,7 @@ function displayCards() {
     cardEl.className = "card";
     cardEl.textContent = `${card.value}${card.suit}`;
     if (selectedIndices.includes(index)) cardEl.classList.add("selected");
+
     cardEl.style.color = (card.suit === '♥' || card.suit === '♦') ? 'red' : 'black';
     cardEl.onclick = () => toggleCard(index);
     cardsDiv.appendChild(cardEl);
@@ -83,7 +81,7 @@ function toggleCard(index) {
   displayCards();
 }
 
-async function replaceCards() {
+function replaceCards() {
   for (let i = 0; i < hand.length; i++) {
     if (!selectedIndices.includes(i)) {
       hand[i] = deck.pop();
@@ -96,7 +94,6 @@ async function replaceCards() {
 
   const evaluation = evaluateHand(hand);
 
-  // Výplata a jackpot
   const payout = calculatePayout(evaluation);
   const jackpotContribution = Math.floor(payout * 0.1);
   jackpot += jackpotContribution;
@@ -105,42 +102,19 @@ async function replaceCards() {
 
   if (evaluation === "Poker (Čtveřice)") {
     finalPayout += jackpot;
-    changeDisplay.textContent = ` + JACKPOT ${jackpot}! 🎉`;
+    changeDisplay.textContent += ` + JACKPOT ${jackpot}! 🎉`;
     jackpot = 0;
-  } else {
-    changeDisplay.textContent = '';
   }
 
   score += finalPayout;
 
-  // Aktualizace statistik
   pokerStats[evaluation] = (pokerStats[evaluation] || 0) + 1;
+
   localStorage.setItem("pokerStats", JSON.stringify(pokerStats));
+  localStorage.setItem("pokerScore", score);
+  localStorage.setItem("pokerBet", bet);
+  localStorage.setItem("pokerJackpot", jackpot);
 
-  // Uložení do Firestore, pokud je uživatel přihlášený
-  const user = auth.currentUser;
-  if (user) {
-    const userRef = db.collection('users').doc(user.uid);
-    const userDoc = await userRef.get();
-    let currentStats = {};
-    if (userDoc.exists) {
-      currentStats = userDoc.data().stats || {};
-    }
-    currentStats[evaluation] = (currentStats[evaluation] || 0) + 1;
-
-    await userRef.set({
-      score: score,
-      bet: bet,
-      jackpot: jackpot,
-      stats: currentStats
-    }, { merge: true });
-  } else {
-    localStorage.setItem("pokerScore", score);
-    localStorage.setItem("pokerBet", bet);
-    localStorage.setItem("pokerJackpot", jackpot);
-  }
-
-  // Nastavení sázky podle skóre
   if (score >= 3000) bet = 50;
   else if (score >= 2000) bet = 25;
   else if (score >= 1000) bet = 10;
@@ -153,6 +127,7 @@ async function replaceCards() {
 
   const sign = finalPayout >= 0 ? "+" : "";
   result.textContent = `${evaluation}! (${sign}${finalPayout})`;
+  changeDisplay.textContent = '';
 }
 
 function evaluateHand(hand) {
