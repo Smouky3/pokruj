@@ -64,7 +64,6 @@ function displayCards() {
     const cardEl = document.createElement("div");
     cardEl.className = "card";
     cardEl.textContent = `${card.value}${card.suit}`;
-    // Přidáme třídu selected pro vizuální označení bez posunu
     if (selectedIndices.includes(index)) cardEl.classList.add("selected");
 
     cardEl.style.color = (card.suit === '♥' || card.suit === '♦') ? 'red' : 'black';
@@ -128,7 +127,7 @@ function replaceCards() {
 
   const sign = finalPayout >= 0 ? "+" : "";
   result.textContent = `${evaluation}! (${sign}${finalPayout})`;
-  changeDisplay.textContent = ''; // změníme aby se po vyhodnocení nezobrazovala změna skóre
+  changeDisplay.textContent = ''; // neukazovat změnu skóre po vyhodnocení
 }
 
 function evaluateHand(hand) {
