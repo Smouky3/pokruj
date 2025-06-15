@@ -64,8 +64,8 @@ function displayCards() {
     const cardEl = document.createElement("div");
     cardEl.className = "card";
     cardEl.textContent = `${card.value}${card.suit}`;
+    // Přidání třídy selected, která nebude posunovat kartu
     if (selectedIndices.includes(index)) cardEl.classList.add("selected");
-
     cardEl.style.color = (card.suit === '♥' || card.suit === '♦') ? 'red' : 'black';
     cardEl.onclick = () => toggleCard(index);
     cardsDiv.appendChild(cardEl);
@@ -95,8 +95,11 @@ function replaceCards() {
   const evaluation = evaluateHand(hand);
 
   const payout = calculatePayout(evaluation);
-  const jackpotContribution = Math.floor(payout * 0.1);
-  jackpot += jackpotContribution;
+
+  // Jackpot se navyšuje o 10% z výhry (pokud je výhra kladná)
+  if (payout > 0) {
+    jackpot += Math.floor(payout * 0.1);
+  }
 
   let finalPayout = payout;
 
