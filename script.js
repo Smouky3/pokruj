@@ -47,9 +47,22 @@ function shuffleDeck() {
 }
 
 function dealCards() {
-  createDeck();
-  shuffleDeck();
-  hand = deck.splice(0, 5);
+  const originHand = localStorage.getItem('pokerOriginHand');
+  if (originHand) {
+    // Použij uloženou původní ruku
+    hand = JSON.parse(originHand);
+
+    // Vytvoříme nový balíček bez karet v ruce
+    createDeck();
+    deck = deck.filter(card => !hand.some(h => h.suit === card.suit && h.value === card.value));
+  } else {
+    // Vygeneruj novou ruku a ulož ji
+    createDeck();
+    shuffleDeck();
+    hand = deck.splice(0, 5);
+    localStorage.setItem('pokerOriginHand', JSON.stringify(hand));
+  }
+
   selectedIndices = [];
   displayCards();
   replaceBtn.disabled = false;
@@ -87,6 +100,9 @@ function replaceCards() {
       hand[i] = deck.pop();
     }
   }
+
+  // Po výměně karet odstraníme uloženou původní ruku, aby příští hra mohla mít novou ruku
+  localStorage.removeItem('pokerOriginHand');
 
   displayCards();
   replaceBtn.disabled = true;
