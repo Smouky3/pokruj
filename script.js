@@ -68,7 +68,6 @@ function displayCards() {
     cardEl.className = "card";
     cardEl.textContent = `${card.value}${card.suit}`;
     if (selectedIndices.includes(index)) cardEl.classList.add("selected");
-
     cardEl.style.color = (card.suit === '♥' || card.suit === '♦') ? 'red' : 'black';
     cardEl.onclick = () => toggleCard(index);
     cardsDiv.appendChild(cardEl);
@@ -97,25 +96,25 @@ async function replaceCards() {
 
   const evaluation = evaluateHand(hand);
 
-  // Přidání 10 % výhry do jackpotu
+  // Výplata a jackpot
   const payout = calculatePayout(evaluation);
   const jackpotContribution = Math.floor(payout * 0.1);
   jackpot += jackpotContribution;
 
   let finalPayout = payout;
 
-  // Výhra jackpotu při čtveřici
   if (evaluation === "Poker (Čtveřice)") {
     finalPayout += jackpot;
-    changeDisplay.textContent += ` + JACKPOT ${jackpot}! 🎉`;
+    changeDisplay.textContent = ` + JACKPOT ${jackpot}! 🎉`;
     jackpot = 0;
+  } else {
+    changeDisplay.textContent = '';
   }
 
   score += finalPayout;
 
   // Aktualizace statistik
   pokerStats[evaluation] = (pokerStats[evaluation] || 0) + 1;
-
   localStorage.setItem("pokerStats", JSON.stringify(pokerStats));
 
   // Uložení do Firestore, pokud je uživatel přihlášený
@@ -141,7 +140,7 @@ async function replaceCards() {
     localStorage.setItem("pokerJackpot", jackpot);
   }
 
-  // Úprava sázky podle skóre
+  // Nastavení sázky podle skóre
   if (score >= 3000) bet = 50;
   else if (score >= 2000) bet = 25;
   else if (score >= 1000) bet = 10;
@@ -154,7 +153,6 @@ async function replaceCards() {
 
   const sign = finalPayout >= 0 ? "+" : "";
   result.textContent = `${evaluation}! (${sign}${finalPayout})`;
-  changeDisplay.textContent = '';
 }
 
 function evaluateHand(hand) {
