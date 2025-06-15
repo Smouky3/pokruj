@@ -60,13 +60,13 @@ body {
   user-select: none;
   box-shadow: 0 5px 10px rgba(0,0,0,0.3);
   position: relative;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: box-shadow 0.2s;
 }
 
 .card.selected {
   box-shadow: 0 0 15px 3px #4caf50;
-  transform: translateY(-8px);
   border: 2px solid #4caf50;
+  /* Neposunujeme kartu, jen zvýrazníme */
 }
 
 .buttons-row {
@@ -149,67 +149,6 @@ button:hover:not(:disabled) {
   font-weight: 700;
   color: #ffd700;
   text-shadow: 0 0 10px #fff000;
-}
-
-/* Styl pro profil.html */
-.profile-container {
-  background-color: #004400;
-  padding: 30px 40px;
-  border-radius: 12px;
-  max-width: 500px;
-  width: 100%;
-  box-shadow: 0 0 20px #00ff00aa;
-  margin-top: 40px;
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 25px;
-  color: #ffd700;
-  text-shadow: 0 0 8px #fff;
-}
-
-.rank {
-  text-align: center;
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 30px;
-  padding: 10px;
-  border-radius: 8px;
-}
-.bronze { background: #cd7f32; color: #2b1600; }
-.silver { background: #c0c0c0; color: #222; }
-.gold { background: #ffd700; color: #5a3a00; }
-.platinum { background: #e5e4e2; color: #333; }
-.diamond { background: #b9f2ff; color: #004d66; }
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-th, td {
-  padding: 10px 14px;
-  border-bottom: 1px solid #006600;
-  text-align: left;
-}
-th {
-  background-color: #006600;
-  font-weight: 700;
-}
-tr:hover {
-  background-color: #005500cc;
-}
-
-.back-link {
-  display: inline-block;
-  margin-bottom: 20px;
-  color: #aaffaa;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 16px;
-}
-.back-link:hover {
-  text-decoration: underline;
 }
 
 /* Nápis Pokruj podle tvého obrázku */
