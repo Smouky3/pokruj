@@ -177,6 +177,17 @@ function calculatePayout(evaluation) {
 drawBtn.onclick = dealCards;
 replaceBtn.onclick = replaceCards;
 
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.code === 'KeyC') {
+    e.preventDefault();
+    if (!drawBtn.disabled) {
+      dealCards();
+    } else if (!replaceBtn.disabled) {
+      replaceCards();
+    }
+  }
+});
+
 replaceBtn.disabled = true;
 scoreDisplay.textContent = score;
 betDisplay.textContent = bet;
