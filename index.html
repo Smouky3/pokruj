@@ -36,31 +36,49 @@
 
   <div class="site-title">Pokruj</div>
 
-  <div class="jackpot-box">
-    <div class="jackpot-title">JACKPOT</div>
-    <div class="jackpot-amount" id="jackpotDisplay">0</div>
-  </div>
+  <div class="main-content">
 
-  <div class="game-container">
-    <div id="cards" class="cards-row"></div>
+    <div class="game-left">
+      <div id="cards" class="cards-row"></div>
 
-    <div class="buttons-row">
-      <button id="drawBtn">Rozdat karty</button>
-      <button id="replaceBtn" disabled>Vyměnit karty</button>
+      <div class="buttons-row">
+        <button id="drawBtn">Rozdat karty</button>
+        <button id="replaceBtn" disabled>Vyměnit karty</button>
+      </div>
+
+      <div class="score-row">
+        <div>Skóre: <span id="score">20</span></div>
+        <div>Sázka: <span id="bet">1</span></div>
+      </div>
+
+      <div id="result"></div>
+      <div id="change" class="change-score"></div>
     </div>
 
-    <div class="score-row">
-      <div>Skóre: <span id="score">20</span></div>
-      <div>Sázka: <span id="bet">1</span></div>
-    </div>
-
-    <div id="result"></div>
-    <div id="change" class="change-score"></div>
   </div>
 
-  <!-- Žebříček hráčů -->
+  <div class="right-panel">
+    <div class="jackpot-box">
+      <div class="jackpot-title">JACKPOT</div>
+      <div class="jackpot-amount" id="jackpotDisplay">0</div>
+    </div>
+
+    <table id="nextBetMilestoneTable">
+      <thead>
+        <tr>
+          <th>Skóre</th>
+          <th>Sázka</th>
+          <th>Do vyšší sázky</th>
+        </tr>
+      </thead>
+      <tbody id="nextBetMilestoneBody">
+        <!-- JS vyplní -->
+      </tbody>
+    </table>
+  </div>
+
   <h2 style="margin-top: 40px; text-align:center; color:#aaffaa;">Žebříček hráčů podle skóre</h2>
-  <table style="margin: 0 auto 40px auto; max-width: 400px; width: 100%;">
+  <table id="leaderboardTable" class="leaderboard-table" style="margin: 0 auto 40px auto; max-width: 400px; width: 100%;">
     <thead>
       <tr>
         <th>Pozice</th>
