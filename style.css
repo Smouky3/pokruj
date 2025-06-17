@@ -1,16 +1,19 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 body {
   background-color: #2a5d2a;
-  margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: white;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  justify-content: flex-start;
   padding: 20px;
   box-sizing: border-box;
-  position: relative;
 }
 
 .profile-link {
@@ -35,20 +38,35 @@ body {
   font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
   font-weight: 700;
   font-size: 70px;
-  color: #2a5d2a; /* tmavě zelený vnitřek */
-  -webkit-text-stroke: 2px #ffd700; /* zlatý okraj */
-  text-stroke: 2px #ffd700; /* fallback */
+  color: #2a5d2a;
+  -webkit-text-stroke: 2px #ffd700;
+  text-stroke: 2px #ffd700;
   text-align: center;
-  margin: 40px 0 40px 0;
+  margin-bottom: 40px;
   user-select: none;
-}
-
-.game-container {
-  text-align: center;
-  max-width: 700px;
   width: 100%;
 }
 
+/* Hlavní obsah s herním polem vycentrovaným */
+.main-content {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  flex-grow: 1;
+}
+
+.game-left {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 400px;
+}
+
+/* Karty */
 .cards-row {
   display: flex;
   justify-content: center;
@@ -57,6 +75,113 @@ body {
   flex-wrap: nowrap;
 }
 
+/* Pravý panel s jackpotem a tabulkou postupů pod ním, menší, vycentrované */
+.right-panel {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center; /* vycentrovat obsah */
+}
+
+/* Jackpot box - menší, vylepšený */
+.jackpot-box {
+  background: linear-gradient(135deg, #006600, #004d00);
+  color: #ffffcc;
+  padding: 12px 20px;
+  border-radius: 14px;
+  box-shadow:
+    0 0 8px #00ff00cc,
+    inset 0 0 6px #66ff66cc;
+  text-align: center;
+  font-weight: 700;
+  font-size: 20px;
+  user-select: none;
+  transition: box-shadow 0.3s ease;
+  cursor: default;
+  width: 100%;
+  max-width: 280px;
+}
+
+.jackpot-box:hover {
+  box-shadow:
+    0 0 12px #00ff00ee,
+    inset 0 0 10px #99ff99ee;
+}
+
+/* Tabulka postupů menší a vycentrovaná */
+#nextBetMilestoneTable {
+  width: 100%;
+  max-width: 280px;
+  border-collapse: collapse;
+  background-color: rgba(170, 255, 170, 0.15);
+  border: 2px solid #aaffaa;
+  border-radius: 12px;
+  box-shadow: 0 0 8px #88cc88aa;
+  font-size: 12px;
+  color: #aaffaa;
+  font-weight: 600;
+  text-align: center;
+  user-select: none;
+}
+
+#nextBetMilestoneTable th,
+#nextBetMilestoneTable td {
+  padding: 5px 8px;
+  border-bottom: 1px solid #aaffaa88;
+}
+
+#nextBetMilestoneTable th {
+  background-color: rgba(170, 255, 170, 0.3);
+  font-weight: 700;
+}
+
+#nextBetMilestoneTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Upravený žebříček hráčů - ladí s ostatními prvky */
+.leaderboard-table {
+  background-color: rgba(0, 77, 0, 0.8);
+  border: 2px solid #aaffaa;
+  border-radius: 12px;
+  box-shadow: 0 0 12px #55aa55cc;
+  color: #ccffcc;
+  font-weight: 600;
+  font-size: 15px;
+  user-select: none;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0 auto 40px auto;
+  max-width: 400px;
+  width: 100%;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #4a7a4a;
+  text-align: center;
+}
+
+.leaderboard-table th {
+  background-color: #4a7a4a;
+  font-weight: 700;
+}
+
+.leaderboard-table tbody tr:hover {
+  background-color: #338833cc;
+  cursor: default;
+}
+
+.leaderboard-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Ostatní styly karet, tlačítek atd. zůstávají stejné */
 .card {
   width: 80px;
   height: 110px;
@@ -74,12 +199,12 @@ body {
   position: relative;
   transition: box-shadow 0.2s, border-color 0.2s;
   box-sizing: border-box;
-  border: 2px solid transparent; /* Základní rámeček transparentní */
+  border: 2px solid transparent;
 }
 
 .card.selected {
   box-shadow: 0 0 15px 3px #4caf50;
-  border-color: #4caf50; /* Jen změní barvu rámečku */
+  border-color: #4caf50;
   transform: none !important;
   margin-top: 0 !important;
   position: relative;
@@ -108,6 +233,7 @@ button:hover:not(:disabled) {
   background-color: #45a049;
 }
 
+/* --- PŮVODNÍ STYL PRO SKÓRE A VÝSLEDKY --- */
 .score-row {
   display: flex;
   justify-content: center;
@@ -115,6 +241,7 @@ button:hover:not(:disabled) {
   flex-wrap: wrap;
   font-size: 24px;
   font-weight: 700;
+  margin-top: 20px;
   margin-bottom: 12px;
 }
 
@@ -123,100 +250,132 @@ button:hover:not(:disabled) {
   font-weight: 700;
   min-height: 28px;
   margin-bottom: 6px;
+  text-align: center;
 }
 
 .change-score {
   font-size: 20px;
   font-style: italic;
   min-height: 22px;
-}
-
-/* Jackpot box */
-.jackpot-box {
-  position: fixed;
-  top: 100px; /* Posunuto níž */
-  right: 20px;
-  background-color: #004d00;
-  color: #ffffff;
-  padding: 16px 22px;
-  border-radius: 12px;
-  box-shadow: 0 0 15px #00ff00aa;
   text-align: center;
-  z-index: 10;
 }
 
-.jackpot-title {
-  font-size: 20px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  margin-bottom: 6px;
-  text-shadow: 0 0 5px #00ff00;
-}
-
-.jackpot-amount {
-  font-size: 32px;
-  font-weight: 700;
-  color: #ffd700;
-  text-shadow: 0 0 10px #fff000;
-}
-
-/* Styl pro profil.html */
+/* --- STYL PRO PROFIL --- */
 .profile-container {
-  background-color: #004400;
+  background: linear-gradient(135deg, #1b3a1b, #2e7d32);
   padding: 30px 40px;
-  border-radius: 12px;
-  max-width: 500px;
+  border-radius: 20px;
+  max-width: 520px;
   width: 100%;
-  box-shadow: 0 0 20px #00ff00aa;
-  margin-top: 40px;
+  box-shadow:
+    0 8px 20px rgba(0, 150, 0, 0.6),
+    inset 0 0 30px rgba(46, 125, 50, 0.8);
+  margin: 40px auto 60px auto;
+  color: #e0ffd8;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-h1 {
+.profile-container h1 {
   text-align: center;
-  margin-bottom: 25px;
-  color: #ffd700;
-  text-shadow: 0 0 8px #fff;
+  margin-bottom: 30px;
+  font-size: 38px;
+  font-weight: 900;
+  color: #fff9c4;
+  text-shadow:
+    0 0 8px #aaffaa,
+    0 0 20px #55aa55;
+  user-select: none;
 }
 
 .rank {
   text-align: center;
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 30px;
-  padding: 10px;
-  border-radius: 8px;
+  font-size: 30px;
+  font-weight: 800;
+  margin-bottom: 40px;
+  padding: 14px 0;
+  border-radius: 12px;
+  box-shadow: 0 0 20px #7fff7f88;
+  user-select: none;
 }
-.bronze { background: #cd7f32; color: #2b1600; }
-.silver { background: #c0c0c0; color: #222; }
-.gold { background: #ffd700; color: #5a3a00; }
-.platinum { background: #e5e4e2; color: #333; }
-.diamond { background: #b9f2ff; color: #004d66; }
 
+/* Různé barvy pro ranky s jemným přechodem */
+.bronze {
+  background: linear-gradient(45deg, #c08a3d, #d8a75a);
+  color: #2b1600;
+  text-shadow: 0 0 6px #a36b21;
+}
+
+.silver {
+  background: linear-gradient(45deg, #bfc0bf, #d3d4d3);
+  color: #222;
+  text-shadow: 0 0 6px #888;
+}
+
+.gold {
+  background: linear-gradient(45deg, #ffec61, #ffd700);
+  color: #5a3a00;
+  text-shadow: 0 0 8px #ffdf00;
+}
+
+.platinum {
+  background: linear-gradient(45deg, #d8e3e7, #e5e4e2);
+  color: #333;
+  text-shadow: 0 0 6px #aabbbf;
+}
+
+.diamond {
+  background: linear-gradient(45deg, #a8f0ff, #b9f2ff);
+  color: #004d66;
+  text-shadow: 0 0 10px #62dbff;
+}
+
+/* Tabulka */
 table {
   width: 100%;
-  border-collapse: collapse;
-}
-th, td {
-  padding: 10px 14px;
-  border-bottom: 1px solid #006600;
-  text-align: left;
-}
-th {
-  background-color: #006600;
-  font-weight: 700;
-}
-tr:hover {
-  background-color: #005500cc;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+  margin-top: 20px;
+  font-size: 16px;
+  color: #c8f7c8;
+  box-shadow: 0 0 10px #3c8f3c88;
+  border-radius: 14px;
+  overflow: hidden;
+  user-select: none;
 }
 
+th, td {
+  padding: 14px 20px;
+  background: rgba(0, 77, 0, 0.85);
+  text-align: left;
+}
+
+th {
+  background: #1a4d1a;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow: inset 0 -2px 6px #3c8f3caa;
+}
+
+tr:hover td {
+  background: #3a8f3a;
+  color: #eaffea;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: default;
+}
+
+/* Odkaz zpět */
 .back-link {
   display: inline-block;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   color: #aaffaa;
+  font-weight: 700;
+  font-size: 18px;
   text-decoration: none;
-  font-weight: 600;
-  font-size: 16px;
+  transition: color 0.3s;
 }
+
 .back-link:hover {
+  color: #ddffaa;
   text-decoration: underline;
 }
