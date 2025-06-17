@@ -5,6 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Profil hráče - Pokruj</title>
   <link rel="stylesheet" href="style.css" />
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNNf0kEABVjKYa7NzlGyhwUqCe9CCDKwA",
+      authDomain: "pokruj-f7785.firebaseapp.com",
+      projectId: "pokruj-f7785",
+      storageBucket: "pokruj-f7785.firebasestorage.app",
+      messagingSenderId: "341436404573",
+      appId: "1:341436404573:web:b2f9495eea0e328df90eb4",
+      measurementId: "G-CV46BKJ882"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
 </head>
 <body>
 
@@ -20,22 +40,13 @@
         </tr>
       </thead>
       <tbody id="statsBody">
-        <!-- Dynamicky generované řádky -->
-        <tr><td>Nevýherní kombinace</td><td>20</td></tr>
-        <tr><td>Pár</td><td>34</td></tr>
-        <tr><td>Dva páry</td><td>12</td></tr>
-        <tr><td>Trojice</td><td>9</td></tr>
-        <tr><td>Straight</td><td>3</td></tr>
-        <tr><td>Flush</td><td>2</td></tr>
-        <tr><td>Full House</td><td>1</td></tr>
-        <tr><td>Poker (Čtveřice)</td><td>0</td></tr>
-        <tr><td>Straight Flush</td><td>0</td></tr>
-        <tr><td>Royal Flush</td><td>0</td></tr>
+        <tr><td>Načítám data...</td><td></td></tr>
       </tbody>
     </table>
 
     <a href="index.html" class="back-link">Zpět do hry</a>
   </div>
 
+  <script src="profil.js"></script>
 </body>
 </html>
