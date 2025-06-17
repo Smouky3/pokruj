@@ -134,7 +134,7 @@ button:hover:not(:disabled) {
 /* Jackpot box */
 .jackpot-box {
   position: fixed;
-  top: 20px;
+  top: 100px; /* Posunuto níž */
   right: 20px;
   background-color: #004d00;
   color: #ffffff;
