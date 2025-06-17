@@ -130,30 +130,39 @@ function updateUI() {
 }
 
 auth.onAuthStateChanged(user => {
-  if (user) {
-    logoutBtn.style.display = 'inline-block';
-    loginBtn.style.display = 'none';
+  const onGamePage = window.location.pathname.includes('index.html');
+  const userInfo = document.getElementById('userInfo');
+
+    if (user) {
+    if (logoutBtn) logoutBtn.style.display = 'inline-block';
+    if (loginBtn) loginBtn.style.display = 'none';
 
     db.collection('users').doc(user.uid).get().then(doc => {
-      if (doc.exists) {
-        const data = doc.data();
-        score = data.score ?? 20;
-        bet = data.bet ?? 1;
-        pokerStats = data.stats ?? {};
-        updateUI();
-      } else {
-        score = 20; bet = 1; pokerStats = {};
-        updateUI();
-      }
-    }).catch(() => {
-      loadFromLocalStorage();
-    });
+    if (doc.exists) {
+    const data = doc.data();
+    const nickname = data.nickname || '???';
+    score = data.score ?? 20;
+    bet = data.bet ?? 1;
+    pokerStats = data.stats ?? {};
+    userInfo.style.display = 'inline-block';
+    userInfo.textContent = `Přihlášen: ${nickname}`;
+    updateUI();
+  }
 
-    loadLeaderboard();
+    }).catch(loadFromLocalStorage);
+
+    if (typeof loadLeaderboard === "function") {
+      loadLeaderboard();
+    }
 
   } else {
-    // ⛔ nepřihlášený uživatel → přesměrování
-    window.location.href = 'login.html';
+    if (logoutBtn) logoutBtn.style.display = 'none';
+    if (loginBtn) loginBtn.style.display = 'inline-block';
+    if (userInfo) userInfo.textContent = '';
+
+    if (onGamePage) {
+      window.location.href = 'login.html';
+    }
   }
 });
 
@@ -185,6 +194,8 @@ function saveData() {
 }
 
 logoutBtn.onclick = () => {
+  userInfo.textContent = '';
+  userInfo.style.display = 'none';
   auth.signOut().then(() => {
     window.location.href = 'login.html';
   });
