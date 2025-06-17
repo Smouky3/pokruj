@@ -73,6 +73,7 @@
 <div class="login-container">
   <h2>Přihlášení / Registrace</h2>
 
+  <input type="text" id="nickname" placeholder="Přezdívka" />
   <input type="email" id="email" placeholder="Email" />
   <input type="password" id="password" placeholder="Heslo" />
 
@@ -93,13 +94,13 @@
 
 <script>
   const firebaseConfig = {
-    apiKey: "AIzaSyCZQvkYcZ3SJKjgxZ0stzdS9y-h3QP4Zzs",
-    authDomain: "pokruj-b111c.firebaseapp.com",
-    projectId: "pokruj-b111c",
-    storageBucket: "pokruj-b111c.appspot.com",
-    messagingSenderId: "221823135309",
-    appId: "1:221823135309:web:f0dd15201d9488be5f3604",
-    measurementId: "G-NNB0QJ1TT9"
+    apiKey: "AIzaSyBNNf0kEABVjKYa7NzlGyhwUqCe9CCDKwA",
+    authDomain: "pokruj-f7785.firebaseapp.com",
+    projectId: "pokruj-f7785",
+    storageBucket: "pokruj-f7785.firebasestorage.app",
+    messagingSenderId: "341436404573",
+    appId: "1:341436404573:web:b2f9495eea0e328df90eb4",
+    measurementId: "G-CV46BKJ882"
   };
 
   firebase.initializeApp(firebaseConfig);
@@ -107,6 +108,7 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
+  const nicknameInput = document.getElementById('nickname');
   const emailInput = document.getElementById('email');
   const passwordInput = document.getElementById('password');
   const registerBtn = document.getElementById('registerBtn');
@@ -114,20 +116,25 @@
   const messageDiv = document.getElementById('message');
 
   registerBtn.onclick = () => {
+    const nickname = nicknameInput.value.trim();
     const email = emailInput.value.trim();
     const password = passwordInput.value.trim();
-    if (!email || !password) {
+
+    if (!nickname || !email || !password) {
       messageDiv.style.color = 'red';
-      messageDiv.textContent = 'Vyplň email i heslo.';
+      messageDiv.textContent = 'Vyplň přezdívku, email i heslo.';
       return;
     }
+
     auth.createUserWithEmailAndPassword(email, password)
       .then(userCredential => {
         messageDiv.style.color = '#4caf50';
         messageDiv.textContent = 'Registrace proběhla úspěšně. Můžeš se přihlásit.';
-        // Inicializuj data ve Firestore
+
         const user = userCredential.user;
+        // Uložíme přezdívku a výchozí data do Firestore
         db.collection('users').doc(user.uid).set({
+          nickname: nickname,
           score: 20,
           bet: 1,
           jackpot: 0,
@@ -143,11 +150,13 @@
   loginBtn.onclick = () => {
     const email = emailInput.value.trim();
     const password = passwordInput.value.trim();
+
     if (!email || !password) {
       messageDiv.style.color = 'red';
       messageDiv.textContent = 'Vyplň email i heslo.';
       return;
     }
+
     auth.signInWithEmailAndPassword(email, password)
       .then(() => {
         messageDiv.style.color = '#4caf50';
