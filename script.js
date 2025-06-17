@@ -3,6 +3,7 @@ const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'
 let deck = [];
 let hand = [];
 let selectedIndices = [];
+let canSelectCards = true; // ⬅️ Nová proměnná
 
 const cardsDiv = document.getElementById("cards");
 const drawBtn = document.getElementById("drawBtn");
@@ -172,7 +173,6 @@ function saveData() {
     db.collection('users').doc(user.uid).get().then(doc => {
       const existingData = doc.data() || {};
       const nickname = existingData.nickname || '???';
-
       db.collection('users').doc(user.uid).set({
         nickname,
         score,
@@ -251,9 +251,7 @@ function shuffleDeck() {
   }
 }
 
-// ZDE JE OPRAVENÁ FUNKCE dealCards
 function dealCards() {
-  // Při každém rozdání smažeme uloženou původní ruku, aby se neopakovala
   localStorage.removeItem('pokerOriginHand');
 
   createDeck();
@@ -262,6 +260,7 @@ function dealCards() {
   localStorage.setItem('pokerOriginHand', JSON.stringify(hand));
 
   selectedIndices = [];
+  canSelectCards = true; // ⬅️ povolit výběr
   displayCards();
   replaceBtn.disabled = false;
   drawBtn.disabled = true;
@@ -277,7 +276,9 @@ function displayCards() {
     cardEl.textContent = `${card.value}${card.suit}`;
     if (selectedIndices.includes(index)) cardEl.classList.add("selected");
     cardEl.style.color = (card.suit === '♥' || card.suit === '♦') ? 'red' : 'black';
-    cardEl.onclick = () => toggleCard(index);
+    cardEl.onclick = () => {
+      if (canSelectCards) toggleCard(index); // ⬅️ výběr pouze pokud povoleno
+    };
     cardsDiv.appendChild(cardEl);
   });
 }
@@ -323,6 +324,7 @@ async function replaceCards() {
   }
 
   localStorage.removeItem('pokerOriginHand');
+  canSelectCards = false; // ⬅️ zakázat výběr
   displayCards();
   replaceBtn.disabled = true;
   drawBtn.disabled = false;
@@ -346,11 +348,8 @@ async function replaceCards() {
   }
 
   score += finalPayout;
-
   pokerStats[evaluation] = (pokerStats[evaluation] || 0) + 1;
-
   bet = getBet(score);
-
   saveData();
 
   scoreDisplay.textContent = score;
@@ -363,7 +362,6 @@ async function replaceCards() {
   changeDisplay.textContent = '';
 
   updateUI();
-
   loadLeaderboard();
 }
 
