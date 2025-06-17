@@ -5,12 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Profil hráče</title>
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNNf0kEABVjKYa7NzlGyhwUqCe9CCDKwA",
+      authDomain: "pokruj-f7785.firebaseapp.com",
+      projectId: "pokruj-f7785",
+      storageBucket: "pokruj-f7785.firebasestorage.app",
+      messagingSenderId: "341436404573",
+      appId: "1:341436404573:web:b2f9495eea0e328df90eb4",
+      measurementId: "G-CV46BKJ882"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
+
 </head>
 <body>
 
 <div class="profile-container">
   <a href="index.html" class="back-link">← Zpět do hry</a>
+  <a href="#" id="logoutBtn" style="float: right; background:#4caf50; color:#fff; padding:6px 12px; border-radius:6px; font-weight:600; cursor:pointer;">Odhlásit se</a>
   <h1>Profil hráče</h1>
+  <div id="nicknameDisplay" style="text-align:center; font-size: 22px; font-weight: 700; margin-bottom: 25px; color: #aaffaa;"></div>
 
   <div id="rank" class="rank">Načítám příčku...</div>
 
@@ -28,8 +51,24 @@
     Skóre: <span id="scoreDisplay">0</span><br />
     Aktuální sázka: <span id="betDisplay">1</span>
   </p>
+
+  <h2 style="margin-top: 40px; text-align:center; color:#aaffaa;">Žebříček hráčů podle skóre</h2>
+  <table style="margin: 0 auto; max-width: 400px; width: 100%;">
+    <thead>
+      <tr>
+        <th>Pozice</th>
+        <th>Přezdívka</th>
+        <th>Skóre</th>
+      </tr>
+    </thead>
+    <tbody id="leaderboardBody">
+      <tr><td colspan="3" style="text-align:center;">Načítám data...</td></tr>
+    </tbody>
+  </table>
+
 </div>
 
 <script src="profil.js"></script>
+
 </body>
 </html>
