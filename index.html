@@ -5,10 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pokruj - poker hra</title>
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNNf0kEABVjKYa7NzlGyhwUqCe9CCDKwA",
+      authDomain: "pokruj-f7785.firebaseapp.com",
+      projectId: "pokruj-f7785",
+      storageBucket: "pokruj-f7785.firebasestorage.app",
+      messagingSenderId: "341436404573",
+      appId: "1:341436404573:web:b2f9495eea0e328df90eb4",
+      measurementId: "G-CV46BKJ882"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
 </head>
 <body>
 
   <a href="profil.html" class="profile-link">Profil</a>
+
+  <a href="#" id="logoutBtn" style="position: fixed; top: 15px; right: 15px; background:#4caf50; color:#fff; padding:10px 16px; border-radius:6px; font-weight:600; box-shadow:0 3px 6px rgba(0,0,0,0.4); cursor:pointer; z-index: 10; display:none;">Odhlásit se</a>
+
+  <a href="login.html" id="loginBtn" style="position: fixed; top: 15px; right: 15px; background:#009688; color:#fff; padding:10px 16px; border-radius:6px; font-weight:600; box-shadow:0 3px 6px rgba(0,0,0,0.4); cursor:pointer; z-index: 10; display:none;">Přihlásit se / Registrovat</a>
 
   <div class="site-title">Pokruj</div>
 
@@ -33,6 +57,21 @@
     <div id="result"></div>
     <div id="change" class="change-score"></div>
   </div>
+
+  <!-- Žebříček hráčů -->
+  <h2 style="margin-top: 40px; text-align:center; color:#aaffaa;">Žebříček hráčů podle skóre</h2>
+  <table style="margin: 0 auto 40px auto; max-width: 400px; width: 100%;">
+    <thead>
+      <tr>
+        <th>Pozice</th>
+        <th>Přezdívka</th>
+        <th>Skóre</th>
+      </tr>
+    </thead>
+    <tbody id="leaderboardBody">
+      <tr><td colspan="3" style="text-align:center;">Načítám data...</td></tr>
+    </tbody>
+  </table>
 
   <script src="script.js"></script>
 
