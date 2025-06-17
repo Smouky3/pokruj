@@ -101,29 +101,36 @@ body {
   align-items: center; /* vycentrovat obsah */
 }
 
-/* Jackpot box - menší, vylepšený */
 .jackpot-box {
-  background: linear-gradient(135deg, #006600, #004d00);
-  color: #ffffcc;
-  padding: 12px 20px;
-  border-radius: 14px;
-  box-shadow:
-    0 0 8px #00ff00cc,
-    inset 0 0 6px #66ff66cc;
-  text-align: center;
-  font-weight: 700;
-  font-size: 20px;
-  user-select: none;
-  transition: box-shadow 0.3s ease;
-  cursor: default;
   width: 100%;
   max-width: 280px;
+  background-color: rgba(170, 255, 170, 0.15);
+  border: 2px solid #aaffaa;
+  border-radius: 12px;
+  box-shadow: 0 0 8px #88cc88aa;
+  font-size: 14px;
+  color: #aaffaa;
+  font-weight: 600;
+  text-align: center;
+  user-select: none;
+  padding: 12px 10px;
+  margin: 0 auto; /* zarovná střed stejně jako tabulky */
+  box-sizing: border-box;
 }
 
-.jackpot-box:hover {
-  box-shadow:
-    0 0 12px #00ff00ee,
-    inset 0 0 10px #99ff99ee;
+.jackpot-box .jackpot-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #ccffcc;
+  text-shadow: 0 0 4px #55ff55;
+}
+
+.jackpot-box .jackpot-amount {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffcc;
+  text-shadow: 0 0 6px #00ff00aa;
 }
 
 /* Tabulka postupů menší a vycentrovaná */
