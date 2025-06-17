@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pokruj - poker hra</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@900&display=swap" rel="stylesheet" />
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -75,21 +76,21 @@
         <!-- JS vyplní -->
       </tbody>
     </table>
-  </div>
 
-  <h2 style="margin-top: 40px; text-align:center; color:#aaffaa;">Žebříček hráčů podle skóre</h2>
-  <table id="leaderboardTable" class="leaderboard-table" style="margin: 0 auto 40px auto; max-width: 400px; width: 100%;">
-    <thead>
-      <tr>
-        <th>Pozice</th>
-        <th>Přezdívka</th>
-        <th>Skóre</th>
-      </tr>
-    </thead>
-    <tbody id="leaderboardBody">
-      <tr><td colspan="3" style="text-align:center;">Načítám data...</td></tr>
-    </tbody>
-  </table>
+    <!-- Žebříček hráčů pod tabulkou postupu -->
+    <table id="leaderboardTable" class="leaderboard-table" style="margin-top: 15px;">
+      <thead>
+        <tr>
+          <th>Pozice</th>
+          <th>Přezdívka</th>
+          <th>Skóre</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboardBody">
+        <tr><td colspan="3" style="text-align:center;">Načítám data...</td></tr>
+      </tbody>
+    </table>
+  </div>
 
   <script src="script.js"></script>
 
