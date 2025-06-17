@@ -23,10 +23,8 @@ let score = 20;
 let bet = 1;
 let jackpot = 0;
 
-// Firestore reference na společný jackpot
 const jackpotDocRef = db.collection('game').doc('jackpot');
 
-// Sledování jackpotu realtime
 jackpotDocRef.onSnapshot(doc => {
   if (doc.exists) {
     jackpot = doc.data().amount || 0;
@@ -67,15 +65,70 @@ async function payoutJackpot() {
   return payoutAmount;
 }
 
+function getNextMilestones(score, count = 3) {
+  const milestones = [
+    50, 150, 300, 500, 800, 1200, 1700, 2300, 3000, 3800,
+    4700, 5700, 6800, 8000, 9300, 10700, 12200, 13800, 15500, 17300
+  ];
+
+  const result = [];
+  let idx = milestones.findIndex(m => score < m);
+  if (idx === -1) {
+    let base = 17300;
+    let step = 2000;
+    let startScore = score < base ? base : base + step * Math.floor((score - base) / step);
+    for (let i = 0; i < count; i++) {
+      let milestoneScore = startScore + step * i;
+      result.push(milestoneScore);
+    }
+  } else {
+    for (let i = 0; i < count; i++) {
+      if (idx + i < milestones.length) {
+        result.push(milestones[idx + i]);
+      } else {
+        let base = 17300;
+        let step = 2000;
+        let extraIdx = idx + i - milestones.length;
+        result.push(base + step * extraIdx);
+      }
+    }
+  }
+  return result;
+}
+
 function updateUI() {
   scoreDisplay.textContent = score;
   betDisplay.textContent = bet;
   jackpotDisplay.textContent = jackpot;
   result.textContent = '';
   changeDisplay.textContent = '';
+
+  const milestoneBody = document.getElementById('nextBetMilestoneBody');
+  milestoneBody.innerHTML = '';
+
+  const currentRow = document.createElement('tr');
+  currentRow.innerHTML = `
+    <td><strong>${score}</strong></td>
+    <td><strong>${bet}</strong></td>
+    <td>Aktuální skóre</td>
+  `;
+  milestoneBody.appendChild(currentRow);
+
+  const nextMilestones = getNextMilestones(score, 3);
+
+  nextMilestones.forEach(milestone => {
+    const diff = milestone - score;
+    const nextBetValue = getBet(milestone);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${milestone}</td>
+      <td>${nextBetValue}</td>
+      <td>${diff > 0 ? diff : 0}</td>
+    `;
+    milestoneBody.appendChild(tr);
+  });
 }
 
-// Přepínání viditelnosti tlačítek podle přihlášení
 auth.onAuthStateChanged(user => {
   if (user) {
     logoutBtn.style.display = 'inline-block';
@@ -140,10 +193,16 @@ function loadLeaderboard() {
 
   db.collection('users')
     .orderBy('score', 'desc')
-    .limit(20)
+    .limit(10)
     .get()
     .then(snapshot => {
+      if (snapshot.empty) {
+        leaderboardBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Žádní hráči k zobrazení.</td></tr>';
+        return;
+      }
+
       leaderboardBody.innerHTML = '';
+
       let position = 1;
       snapshot.forEach(doc => {
         const data = doc.data();
@@ -167,17 +226,11 @@ function loadLeaderboard() {
 
         leaderboardBody.appendChild(tr);
       });
-
-      if (leaderboardBody.children.length === 0) {
-        leaderboardBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Žádní hráči k zobrazení.</td></tr>';
-      }
     })
     .catch(error => {
       leaderboardBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color: red;">Chyba při načítání: ${error.message}</td></tr>`;
     });
 }
-
-// --- HERNÍ LOGIKA ---
 
 function createDeck() {
   deck = [];
@@ -216,6 +269,18 @@ function dealCards() {
   changeDisplay.textContent = '';
 }
 
+function toggleCard(index) {
+  if (replaceBtn.disabled) {
+    return;
+  }
+  if (selectedIndices.includes(index)) {
+    selectedIndices = selectedIndices.filter(i => i !== index);
+  } else {
+    selectedIndices.push(index);
+  }
+  displayCards();
+}
+
 function displayCards() {
   cardsDiv.innerHTML = '';
   hand.forEach((card, index) => {
@@ -229,13 +294,28 @@ function displayCards() {
   });
 }
 
-function toggleCard(index) {
-  if (selectedIndices.includes(index)) {
-    selectedIndices = selectedIndices.filter(i => i !== index);
-  } else {
-    selectedIndices.push(index);
-  }
-  displayCards();
+function getBet(score) {
+  if (score < 50) return 1;
+  if (score < 150) return 2;
+  if (score < 300) return 3;
+  if (score < 500) return 4;
+  if (score < 800) return 5;
+  if (score < 1200) return 6;
+  if (score < 1700) return 7;
+  if (score < 2300) return 8;
+  if (score < 3000) return 9;
+  if (score < 3800) return 10;
+  if (score < 4700) return 11;
+  if (score < 5700) return 12;
+  if (score < 6800) return 13;
+  if (score < 8000) return 14;
+  if (score < 9300) return 15;
+  if (score < 10700) return 16;
+  if (score < 12200) return 17;
+  if (score < 13800) return 18;
+  if (score < 15500) return 19;
+  if (score < 17300) return 20;
+  return 20 + Math.floor((score - 17300) / 2000);
 }
 
 async function replaceCards() {
@@ -253,7 +333,6 @@ async function replaceCards() {
   const evaluation = evaluateHand(hand);
   const payout = calculatePayout(evaluation);
 
-  // Přidání 10% z výhry do společného jackpotu, pokud je výhra kladná
   if (payout > 0) {
     const contribution = Math.floor(payout * 0.10);
     if (contribution > 0) {
@@ -273,20 +352,13 @@ async function replaceCards() {
 
   pokerStats[evaluation] = (pokerStats[evaluation] || 0) + 1;
 
+  bet = getBet(score);
+
   saveData();
 
-  if (score >= 3000) bet = 50;
-  else if (score >= 2000) bet = 25;
-  else if (score >= 1000) bet = 10;
-  else if (score >= 500) bet = 5;
-  else bet = 1;
+  updateUI();
 
-  scoreDisplay.textContent = score;
-  betDisplay.textContent = bet;
-  jackpotDisplay.textContent = jackpot;
-
-  const sign = finalPayout >= 0 ? "+" : "";
-  result.textContent = `${evaluation}! (${sign}${finalPayout})`;
+  result.textContent = `${evaluation}! (${finalPayout >= 0 ? '+' : ''}${finalPayout})`;
   changeDisplay.textContent = '';
 
   loadLeaderboard();
@@ -321,16 +393,16 @@ function evaluateHand(hand) {
 
 function calculatePayout(evaluation) {
   const payoutTable = {
-    "Pár": 2,
-    "Dva páry": 4,
-    "Trojice": 6,
-    "Straight": 10,
-    "Flush": 15,
-    "Full House": 20,
-    "Poker (Čtveřice)": 50,
-    "Straight Flush": 100,
-    "Royal Flush": 500,
-    "Žádná kombinace": -1
+    "Žádná kombinace": -1,
+    "Pár": 1.5,
+    "Dva páry": 2,
+    "Trojice": 4,
+    "Straight": 7,
+    "Flush": 12,
+    "Full House": 17,
+    "Poker (Čtveřice)": 25,
+    "Straight Flush": 40,
+    "Royal Flush": 70
   };
   let multiplier = payoutTable[evaluation] ?? 0;
   return Math.round(multiplier * bet);
