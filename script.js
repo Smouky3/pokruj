@@ -100,7 +100,7 @@ function updateUI() {
   scoreDisplay.textContent = score;
   betDisplay.textContent = bet;
   jackpotDisplay.textContent = jackpot;
-  result.textContent = '';
+  // necháváme text výsledku viditelný
   changeDisplay.textContent = '';
 
   const milestoneBody = document.getElementById('nextBetMilestoneBody');
@@ -114,7 +114,8 @@ function updateUI() {
   `;
   milestoneBody.appendChild(currentRow);
 
-  const nextMilestones = getNextMilestones(score, 3);
+  // Zobrazíme aktuální + 2 následující milníky (celkem 3 řádky)
+  const nextMilestones = getNextMilestones(score, 2);
 
   nextMilestones.forEach(milestone => {
     const diff = milestone - score;
@@ -193,16 +194,10 @@ function loadLeaderboard() {
 
   db.collection('users')
     .orderBy('score', 'desc')
-    .limit(10)
+    .limit(20)
     .get()
     .then(snapshot => {
-      if (snapshot.empty) {
-        leaderboardBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Žádní hráči k zobrazení.</td></tr>';
-        return;
-      }
-
       leaderboardBody.innerHTML = '';
-
       let position = 1;
       snapshot.forEach(doc => {
         const data = doc.data();
@@ -226,6 +221,10 @@ function loadLeaderboard() {
 
         leaderboardBody.appendChild(tr);
       });
+
+      if (leaderboardBody.children.length === 0) {
+        leaderboardBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Žádní hráči k zobrazení.</td></tr>';
+      }
     })
     .catch(error => {
       leaderboardBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color: red;">Chyba při načítání: ${error.message}</td></tr>`;
@@ -269,18 +268,6 @@ function dealCards() {
   changeDisplay.textContent = '';
 }
 
-function toggleCard(index) {
-  if (replaceBtn.disabled) {
-    return;
-  }
-  if (selectedIndices.includes(index)) {
-    selectedIndices = selectedIndices.filter(i => i !== index);
-  } else {
-    selectedIndices.push(index);
-  }
-  displayCards();
-}
-
 function displayCards() {
   cardsDiv.innerHTML = '';
   hand.forEach((card, index) => {
@@ -292,6 +279,15 @@ function displayCards() {
     cardEl.onclick = () => toggleCard(index);
     cardsDiv.appendChild(cardEl);
   });
+}
+
+function toggleCard(index) {
+  if (selectedIndices.includes(index)) {
+    selectedIndices = selectedIndices.filter(i => i !== index);
+  } else {
+    selectedIndices.push(index);
+  }
+  displayCards();
 }
 
 function getBet(score) {
@@ -356,10 +352,16 @@ async function replaceCards() {
 
   saveData();
 
-  updateUI();
+  scoreDisplay.textContent = score;
+  betDisplay.textContent = bet;
+  jackpotDisplay.textContent = jackpot;
 
-  result.textContent = `${evaluation}! (${finalPayout >= 0 ? '+' : ''}${finalPayout})`;
+  const sign = finalPayout >= 0 ? "+" : "";
+  const evaluationText = evaluation === "Žádná kombinace" ? "Prohra" : evaluation;
+  result.textContent = `${evaluationText}! (${sign}${finalPayout})`;
   changeDisplay.textContent = '';
+
+  updateUI(); // Aktualizace tabulky postupu
 
   loadLeaderboard();
 }
