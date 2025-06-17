@@ -130,33 +130,31 @@ function updateUI() {
 }
 
 auth.onAuthStateChanged(user => {
+  const onGamePage = window.location.pathname.includes('index.html');
+
   if (user) {
-    logoutBtn.style.display = 'inline-block';
-    loginBtn.style.display = 'none';
+    if (logoutBtn) logoutBtn.style.display = 'inline-block';
+    if (loginBtn) loginBtn.style.display = 'none';
 
     db.collection('users').doc(user.uid).get().then(doc => {
-      if (doc.exists) {
-        const data = doc.data();
-        score = data.score ?? 20;
-        bet = data.bet ?? 1;
-        pokerStats = data.stats ?? {};
-        updateUI();
-      } else {
-        score = 20; bet = 1; pokerStats = {};
-        updateUI();
-      }
-    }).catch(() => {
-      loadFromLocalStorage();
-    });
+      const data = doc.data() || {};
+      score = data.score ?? 20;
+      bet = data.bet ?? 1;
+      pokerStats = data.stats ?? {};
+      updateUI();
+    }).catch(loadFromLocalStorage);
 
-    loadLeaderboard();
+    if (typeof loadLeaderboard === "function") {
+      loadLeaderboard();
+    }
 
   } else {
-    logoutBtn.style.display = 'none';
-    loginBtn.style.display = 'inline-block';
-    loadFromLocalStorage();
+    if (logoutBtn) logoutBtn.style.display = 'none';
+    if (loginBtn) loginBtn.style.display = 'inline-block';
 
-    leaderboardBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Pro zobrazení žebříčku se musíš přihlásit.</td></tr>';
+    if (onGamePage) {
+      window.location.href = 'login.html';
+    }
   }
 });
 
