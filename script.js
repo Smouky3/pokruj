@@ -169,10 +169,16 @@ function loadFromLocalStorage() {
 function saveData() {
   const user = auth.currentUser;
   if (user) {
-    db.collection('users').doc(user.uid).set({
-      score,
-      bet,
-      stats: pokerStats
+    db.collection('users').doc(user.uid).get().then(doc => {
+      const existingData = doc.data() || {};
+      const nickname = existingData.nickname || '???';
+
+      db.collection('users').doc(user.uid).set({
+        nickname,
+        score,
+        bet,
+        stats: pokerStats
+      });
     });
   } else {
     localStorage.setItem("pokerScore", score);
