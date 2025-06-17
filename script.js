@@ -100,7 +100,6 @@ function updateUI() {
   scoreDisplay.textContent = score;
   betDisplay.textContent = bet;
   jackpotDisplay.textContent = jackpot;
-  // necháváme text výsledku viditelný
   changeDisplay.textContent = '';
 
   const milestoneBody = document.getElementById('nextBetMilestoneBody');
@@ -114,7 +113,6 @@ function updateUI() {
   `;
   milestoneBody.appendChild(currentRow);
 
-  // Zobrazíme aktuální + 2 následující milníky (celkem 3 řádky)
   const nextMilestones = getNextMilestones(score, 2);
 
   nextMilestones.forEach(milestone => {
@@ -247,18 +245,15 @@ function shuffleDeck() {
   }
 }
 
+// ZDE JE OPRAVENÁ FUNKCE dealCards
 function dealCards() {
-  const originHand = localStorage.getItem('pokerOriginHand');
-  if (originHand) {
-    hand = JSON.parse(originHand);
-    createDeck();
-    deck = deck.filter(card => !hand.some(h => h.suit === card.suit && h.value === card.value));
-  } else {
-    createDeck();
-    shuffleDeck();
-    hand = deck.splice(0, 5);
-    localStorage.setItem('pokerOriginHand', JSON.stringify(hand));
-  }
+  // Při každém rozdání smažeme uloženou původní ruku, aby se neopakovala
+  localStorage.removeItem('pokerOriginHand');
+
+  createDeck();
+  shuffleDeck();
+  hand = deck.splice(0, 5);
+  localStorage.setItem('pokerOriginHand', JSON.stringify(hand));
 
   selectedIndices = [];
   displayCards();
@@ -361,7 +356,7 @@ async function replaceCards() {
   result.textContent = `${evaluationText}! (${sign}${finalPayout})`;
   changeDisplay.textContent = '';
 
-  updateUI(); // Aktualizace tabulky postupu
+  updateUI();
 
   loadLeaderboard();
 }
