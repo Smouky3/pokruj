@@ -3,38 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Profil hráče</title>
+  <title>Profil hráče - Pokruj</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <a href="index.html" class="back-link">← Zpět do hry</a>
-
   <div class="profile-container">
     <h1>Profil hráče</h1>
+    <div class="rank gold">Zlatý</div>
 
-    <div class="rank gold">Zlatý hráč</div>
-
-    <table>
+    <table class="profile-stats-table">
       <thead>
         <tr>
           <th>Kombinace</th>
-          <th>Počet výher</th>
-          <th>Body</th>
+          <th>Počet</th>
         </tr>
       </thead>
-      <tbody>
-        <tr><td>Pár</td><td>34</td><td>51</td></tr>
-        <tr><td>Dva páry</td><td>12</td><td>24</td></tr>
-        <tr><td>Trojice</td><td>9</td><td>36</td></tr>
-        <tr><td>Straight</td><td>3</td><td>21</td></tr>
-        <tr><td>Flush</td><td>2</td><td>24</td></tr>
-        <tr><td>Full House</td><td>1</td><td>17</td></tr>
-        <tr><td>Poker (Čtveřice)</td><td>0</td><td>0</td></tr>
-        <tr><td>Straight Flush</td><td>0</td><td>0</td></tr>
-        <tr><td>Royal Flush</td><td>0</td><td>0</td></tr>
+      <tbody id="statsBody">
+        <!-- Dynamicky generované řádky -->
+        <tr><td>Nevýherní kombinace</td><td>20</td></tr>
+        <tr><td>Pár</td><td>34</td></tr>
+        <tr><td>Dva páry</td><td>12</td></tr>
+        <tr><td>Trojice</td><td>9</td></tr>
+        <tr><td>Straight</td><td>3</td></tr>
+        <tr><td>Flush</td><td>2</td></tr>
+        <tr><td>Full House</td><td>1</td></tr>
+        <tr><td>Poker (Čtveřice)</td><td>0</td></tr>
+        <tr><td>Straight Flush</td><td>0</td></tr>
+        <tr><td>Royal Flush</td><td>0</td></tr>
       </tbody>
     </table>
+
+    <a href="index.html" class="back-link">Zpět do hry</a>
   </div>
 
 </body>
