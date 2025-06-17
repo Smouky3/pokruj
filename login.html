@@ -5,15 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Přihlášení / Registrace - Pokruj</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@900&display=swap" rel="stylesheet" /> <!-- ⬅️ přidáno -->
+
   <style>
     body {
       background-color: #2a5d2a;
       color: white;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
       padding: 20px;
       box-sizing: border-box;
@@ -26,6 +28,7 @@
       max-width: 400px;
       width: 100%;
       text-align: center;
+      margin-top: 30px;
     }
     input {
       width: 100%;
@@ -36,9 +39,9 @@
       font-size: 16px;
     }
     button {
-      width: 48%;
+      width: 100%;
       padding: 12px 0;
-      margin: 10px 1%;
+      margin: 10px 0;
       font-weight: 700;
       font-size: 16px;
       border: none;
@@ -66,111 +69,36 @@
     a:hover {
       text-decoration: underline;
     }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
 
-<div class="login-container">
-  <h2>Přihlášení / Registrace</h2>
+  <div class="site-title">Pokruj</div>
 
-  <input type="text" id="nickname" placeholder="Přezdívka" />
-  <input type="email" id="email" placeholder="Email" />
-  <input type="password" id="password" placeholder="Heslo" />
+  <div class="login-container">
+    <h2 id="formTitle">Přihlášení</h2>
 
-  <div>
-    <button id="registerBtn">Registrovat</button>
+    <input type="text" id="nickname" placeholder="Přezdívka" class="hidden" />
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Heslo" />
+
     <button id="loginBtn">Přihlásit se</button>
+    <button id="switchToRegisterBtn">Zaregistrovat se</button>
+    <button id="registerBtn" class="hidden">Dokončit registraci</button>
+
+    <div id="message"></div>
+
+    <a href="index.html">← Zpět do hry (bez přihlášení)</a>
   </div>
 
-  <div id="message"></div>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-  <a href="index.html">← Zpět do hry (bez přihlášení)</a>
-</div>
-
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBNNf0kEABVjKYa7NzlGyhwUqCe9CCDKwA",
-    authDomain: "pokruj-f7785.firebaseapp.com",
-    projectId: "pokruj-f7785",
-    storageBucket: "pokruj-f7785.firebasestorage.app",
-    messagingSenderId: "341436404573",
-    appId: "1:341436404573:web:b2f9495eea0e328df90eb4",
-    measurementId: "G-CV46BKJ882"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-
-  const nicknameInput = document.getElementById('nickname');
-  const emailInput = document.getElementById('email');
-  const passwordInput = document.getElementById('password');
-  const registerBtn = document.getElementById('registerBtn');
-  const loginBtn = document.getElementById('loginBtn');
-  const messageDiv = document.getElementById('message');
-
-  registerBtn.onclick = () => {
-    const nickname = nicknameInput.value.trim();
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
-
-    if (!nickname || !email || !password) {
-      messageDiv.style.color = 'red';
-      messageDiv.textContent = 'Vyplň přezdívku, email i heslo.';
-      return;
-    }
-
-    auth.createUserWithEmailAndPassword(email, password)
-      .then(userCredential => {
-        messageDiv.style.color = '#4caf50';
-        messageDiv.textContent = 'Registrace proběhla úspěšně. Můžeš se přihlásit.';
-
-        const user = userCredential.user;
-        // Uložíme přezdívku a výchozí data do Firestore
-        db.collection('users').doc(user.uid).set({
-          nickname: nickname,
-          score: 20,
-          bet: 1,
-          jackpot: 0,
-          stats: {}
-        });
-      })
-      .catch(e => {
-        messageDiv.style.color = 'red';
-        messageDiv.textContent = 'Chyba při registraci: ' + e.message;
-      });
-  };
-
-  loginBtn.onclick = () => {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
-
-    if (!email || !password) {
-      messageDiv.style.color = 'red';
-      messageDiv.textContent = 'Vyplň email i heslo.';
-      return;
-    }
-
-    auth.signInWithEmailAndPassword(email, password)
-      .then(() => {
-        messageDiv.style.color = '#4caf50';
-        messageDiv.textContent = 'Přihlášení úspěšné. Nyní budeš přesměrován...';
-        setTimeout(() => {
-          window.location.href = 'index.html';
-        }, 1500);
-      })
-      .catch(e => {
-        messageDiv.style.color = 'red';
-        messageDiv.textContent = 'Chyba při přihlášení: ' + e.message;
-      });
-  };
-</script>
-
+  <script src="login.js"></script>
 </body>
 </html>
