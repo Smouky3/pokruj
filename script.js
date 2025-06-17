@@ -341,7 +341,7 @@ async function replaceCards() {
 
   let finalPayout = payout;
 
-  if (evaluation === "Poker (Čtveřice)") {
+  if (evaluation === "Straight Flush") {
     const jackpotPayout = await payoutJackpot();
     finalPayout += jackpotPayout;
     changeDisplay.textContent += ` + JACKPOT ${jackpotPayout}! 🎉`;
