@@ -456,3 +456,75 @@ drawBtn.onclick = dealCards;
 replaceBtn.onclick = replaceCards;
 
 replaceBtn.disabled = true;
+
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
+
+// Odeslání zprávy tlačítkem
+chatSend.addEventListener('click', sendMessage);
+
+// Odeslání zprávy i klávesou Enter
+chatInput.addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') {
+    sendMessage();
+  }
+});
+
+// Funkce pro odeslání zprávy s přezdívkou
+function sendMessage() {
+  const message = chatInput.value.trim();
+  const user = auth.currentUser;
+
+  if (message && user) {
+    db.collection('users').doc(user.uid).get()
+      .then(doc => {
+        const nickname = doc.exists && doc.data().nickname ? doc.data().nickname : "Hráč";
+
+        db.collection("chat").add({
+          uid: user.uid,
+          nickname: nickname,
+          message: message,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        chatInput.value = '';
+      });
+  }
+}
+
+db.collection("chat")
+  .orderBy("timestamp", "desc")
+  .limit(50)
+  .onSnapshot(snapshot => {
+    chatMessages.innerHTML = '';
+    const messages = [];
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const time = data.timestamp?.toDate().toLocaleTimeString() || '';
+      messages.push(`
+  <div>
+    <span style="color:#666; font-size:12px;">${time}</span>
+    <strong style="margin-left: 6px;">${data.nickname || 'Hráč'}:</strong> ${data.message}
+  </div>
+`);
+
+    });
+    chatMessages.innerHTML = messages.reverse().join('');
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  });
+
+const emojiToggle = document.getElementById("emojiToggle");
+const emojiPicker = document.getElementById("emojiPicker");
+
+emojiToggle.addEventListener("click", () => {
+  emojiPicker.style.display = emojiPicker.style.display === "none" ? "block" : "none";
+});
+
+// Vkládání smajlíků do inputu
+emojiPicker.addEventListener("click", (e) => {
+  if (e.target.tagName === "SPAN") {
+    chatInput.value += e.target.textContent;
+    chatInput.focus();
+  }
+});
