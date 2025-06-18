@@ -180,14 +180,32 @@ function saveData() {
       const existingData = doc.data() || {};
       const nickname = existingData.nickname || '???';
 
-      const { dailyStats, ...pureStats } = pokerStats;
+      const { dailyStats: newDailyStats = {}, ...pureStats } = pokerStats;
+      const existingDailyStats = existingData.dailyStats || {};
+
+      const today = new Date().toISOString().split('T')[0];
+
+      const todayClient = newDailyStats[today] || {};
+      const todayServer = existingDailyStats[today] || {};
+
+      const mergedToday = { ...todayServer };
+
+      // ✨ Přičíst hodnoty z klienta
+      for (let key in todayClient) {
+        mergedToday[key] = (mergedToday[key] || 0) + todayClient[key];
+      }
+
+      const updatedDailyStats = {
+        ...existingDailyStats,
+        [today]: mergedToday
+      };
 
       db.collection('users').doc(user.uid).set({
         nickname,
         score,
         bet,
         stats: pureStats,
-        dailyStats: dailyStats || {}
+        dailyStats: updatedDailyStats
       });
     });
   } else {
@@ -362,10 +380,17 @@ async function replaceCards() {
   score += finalPayout;
 
   const today = new Date().toISOString().split('T')[0];
-  pokerStats[evaluation] = (pokerStats[evaluation] || 0) + 1;
-  pokerStats.dailyStats = pokerStats.dailyStats || {};
-  pokerStats.dailyStats[today] = pokerStats.dailyStats[today] || {};
-  pokerStats.dailyStats[today][evaluation] = (pokerStats.dailyStats[today][evaluation] || 0) + 1;
+
+// Zajistit oddělené součty
+pokerStats[evaluation] = (pokerStats[evaluation] || 0) + 1;
+
+// Zajistit existenci dailyStats
+pokerStats.dailyStats = pokerStats.dailyStats || {};
+
+// Zachovat předchozí hodnoty
+const todayStats = pokerStats.dailyStats[today] || {};
+todayStats[evaluation] = (todayStats[evaluation] || 0) + 1;
+pokerStats.dailyStats[today] = todayStats;
 
   bet = getBet(score);
   saveData();
