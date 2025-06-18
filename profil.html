@@ -30,17 +30,32 @@
 
   <div class="profile-container">
     <h1>Profil hráče</h1>
-    <div class="rank gold">Zlatý</div>
 
+    <!-- Souhrnná tabulka jako první -->
     <table class="profile-stats-table">
       <thead>
         <tr>
-          <th>Kombinace</th>
-          <th>Počet</th>
+          <th style="width: 50%;">Statistika</th>
+          <th style="width: 25%;">Dnes</th>
+          <th style="width: 25%;">Celkem</th>
+        </tr>
+      </thead>
+      <tbody id="summaryStatsBody">
+        <tr><td colspan="3">Načítám souhrn...</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Tabulka kombinací pod tím -->
+    <table class="profile-stats-table">
+      <thead>
+        <tr>
+          <th style="width: 50%;">Kombinace</th>
+          <th style="width: 25%;">Dnes</th>
+          <th style="width: 25%;">Celkem</th>
         </tr>
       </thead>
       <tbody id="statsBody">
-        <tr><td>Načítám data...</td><td></td></tr>
+        <tr><td colspan="3">Načítám data...</td></tr>
       </tbody>
     </table>
 
