@@ -1,4 +1,5 @@
 const statsBody = document.getElementById('statsBody');
+const summaryStatsBody = document.getElementById('summaryStatsBody');
 
 auth.onAuthStateChanged(user => {
   if (user) {
@@ -7,8 +8,13 @@ auth.onAuthStateChanged(user => {
         if (doc.exists) {
           const data = doc.data();
           const stats = data.stats || {};
+          const dailyStats = data.dailyStats || {};
 
-          statsBody.innerHTML = ''; // vyprázdnit tabulku
+          const today = new Date().toISOString().split('T')[0];
+          const todayStats = dailyStats[today] || {};
+
+          statsBody.innerHTML = '';
+          summaryStatsBody.innerHTML = '';
 
           const allCombos = [
             "Žádná kombinace",
@@ -23,23 +29,71 @@ auth.onAuthStateChanged(user => {
             "Royal Flush"
           ];
 
+          // Součty
+          let totalGames = 0;
+          let totalWins = 0;
+          let totalLosses = 0;
+
+          let todayGames = 0;
+          let todayWins = 0;
+          let todayLosses = 0;
+
           allCombos.forEach(combo => {
-            const count = stats[combo] || 0;
-            const displayName = combo === "Žádná kombinace" ? "Nevýherní kombinace" : combo;
+            const isLoss = combo === "Žádná kombinace";
+            const total = stats[combo] || 0;
+            const todayCount = todayStats[combo] || 0;
+
+            totalGames += total;
+            todayGames += todayCount;
+
+            if (isLoss) {
+              totalLosses += total;
+              todayLosses += todayCount;
+            } else {
+              totalWins += total;
+              todayWins += todayCount;
+            }
+          });
+
+          // Souhrnná tabulka (horní)
+          const addSummaryRow = (label, todayValue, totalValue) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${label}</td><td>${todayValue}</td><td>${totalValue}</td>`;
+            summaryStatsBody.appendChild(tr);
+          };
+
+          const totalSuccessRate = totalGames > 0 ? Math.round((totalWins / totalGames) * 100) : 0;
+          const todaySuccessRate = todayGames > 0 ? Math.round((todayWins / todayGames) * 100) : 0;
+
+          addSummaryRow("Her", todayGames, totalGames);
+          addSummaryRow("Výhry", todayWins, totalWins);
+          addSummaryRow("Prohry", todayLosses, totalLosses);
+          addSummaryRow("Úspěšnost", `${todaySuccessRate}%`, `${totalSuccessRate}%`);
+
+          // Kombinace (dolní tabulka) – bez "Žádná kombinace"
+          allCombos.forEach(combo => {
+            if (combo === "Žádná kombinace") return;
+
+            const totalCount = stats[combo] || 0;
+            const todayCount = todayStats[combo] || 0;
 
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${displayName}</td><td>${count}</td>`;
+            tr.innerHTML = `<td>${combo}</td><td>${todayCount}</td><td>${totalCount}</td>`;
             statsBody.appendChild(tr);
           });
+
         } else {
-          statsBody.innerHTML = '<tr><td colspan="2" style="text-align:center;">Žádná data k zobrazení.</td></tr>';
+          statsBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Žádná data k zobrazení.</td></tr>';
+          summaryStatsBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Žádná data k zobrazení.</td></tr>';
         }
       })
       .catch(err => {
-        statsBody.innerHTML = `<tr><td colspan="2" style="color:red; text-align:center;">Chyba při načítání statistik: ${err.message}</td></tr>`;
+        statsBody.innerHTML = `<tr><td colspan="3" style="color:red; text-align:center;">Chyba při načítání statistik: ${err.message}</td></tr>`;
+        summaryStatsBody.innerHTML = `<tr><td colspan="3" style="color:red; text-align:center;">Chyba při načítání souhrnu: ${err.message}</td></tr>`;
         console.error("Chyba při načítání statistik:", err);
       });
   } else {
-    statsBody.innerHTML = '<tr><td colspan="2" style="text-align:center;">Pro zobrazení statistik se musíš přihlásit.</td></tr>';
+    statsBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Pro zobrazení statistik se musíš přihlásit.</td></tr>';
+    summaryStatsBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Pro zobrazení souhrnu se musíš přihlásit.</td></tr>';
   }
 });
