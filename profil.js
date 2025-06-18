@@ -10,6 +10,12 @@ auth.onAuthStateChanged(user => {
           const stats = data.stats || {};
           const dailyStats = data.dailyStats || {};
 
+          // Zobrazení přezdívky
+          const nicknameDisplay = document.getElementById("nicknameDisplay");
+          if (nicknameDisplay) {
+            nicknameDisplay.textContent = data.nickname || '';
+          }
+
           const today = new Date().toISOString().split('T')[0];
           const todayStats = dailyStats[today] || {};
 
@@ -29,14 +35,8 @@ auth.onAuthStateChanged(user => {
             "Royal Flush"
           ];
 
-          // Součty
-          let totalGames = 0;
-          let totalWins = 0;
-          let totalLosses = 0;
-
-          let todayGames = 0;
-          let todayWins = 0;
-          let todayLosses = 0;
+          let totalGames = 0, totalWins = 0, totalLosses = 0;
+          let todayGames = 0, todayWins = 0, todayLosses = 0;
 
           allCombos.forEach(combo => {
             const isLoss = combo === "Žádná kombinace";
@@ -55,7 +55,6 @@ auth.onAuthStateChanged(user => {
             }
           });
 
-          // Souhrnná tabulka (horní)
           const addSummaryRow = (label, todayValue, totalValue) => {
             const tr = document.createElement('tr');
             tr.innerHTML = `<td>${label}</td><td>${todayValue}</td><td>${totalValue}</td>`;
@@ -70,7 +69,6 @@ auth.onAuthStateChanged(user => {
           addSummaryRow("Prohry", todayLosses, totalLosses);
           addSummaryRow("Úspěšnost", `${todaySuccessRate}%`, `${totalSuccessRate}%`);
 
-          // Kombinace (dolní tabulka) – bez "Žádná kombinace"
           allCombos.forEach(combo => {
             if (combo === "Žádná kombinace") return;
 
@@ -92,6 +90,7 @@ auth.onAuthStateChanged(user => {
         summaryStatsBody.innerHTML = `<tr><td colspan="3" style="color:red; text-align:center;">Chyba při načítání souhrnu: ${err.message}</td></tr>`;
         console.error("Chyba při načítání statistik:", err);
       });
+
   } else {
     statsBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Pro zobrazení statistik se musíš přihlásit.</td></tr>';
     summaryStatsBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Pro zobrazení souhrnu se musíš přihlásit.</td></tr>';
