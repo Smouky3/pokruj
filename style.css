@@ -309,48 +309,6 @@ button:hover:not(:disabled) {
   user-select: none;
 }
 
-.rank {
-  text-align: center;
-  font-size: 30px;
-  font-weight: 800;
-  margin-bottom: 40px;
-  padding: 14px 0;
-  border-radius: 12px;
-  box-shadow: 0 0 20px #7fff7f88;
-  user-select: none;
-}
-
-/* Různé barvy pro ranky s jemným přechodem */
-.bronze {
-  background: linear-gradient(45deg, #c08a3d, #d8a75a);
-  color: #2b1600;
-  text-shadow: 0 0 6px #a36b21;
-}
-
-.silver {
-  background: linear-gradient(45deg, #bfc0bf, #d3d4d3);
-  color: #222;
-  text-shadow: 0 0 6px #888;
-}
-
-.gold {
-  background: linear-gradient(45deg, #ffec61, #ffd700);
-  color: #5a3a00;
-  text-shadow: 0 0 8px #ffdf00;
-}
-
-.platinum {
-  background: linear-gradient(45deg, #d8e3e7, #e5e4e2);
-  color: #333;
-  text-shadow: 0 0 6px #aabbbf;
-}
-
-.diamond {
-  background: linear-gradient(45deg, #a8f0ff, #b9f2ff);
-  color: #004d66;
-  text-shadow: 0 0 10px #62dbff;
-}
-
 /* --- Nový sjednocený styl tabulky statistik v profilu --- */
 .profile-stats-table {
   width: 100%;
