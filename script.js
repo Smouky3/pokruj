@@ -179,11 +179,15 @@ function saveData() {
     db.collection('users').doc(user.uid).get().then(doc => {
       const existingData = doc.data() || {};
       const nickname = existingData.nickname || '???';
+
+      const { dailyStats, ...pureStats } = pokerStats;
+
       db.collection('users').doc(user.uid).set({
         nickname,
         score,
         bet,
-        stats: pokerStats
+        stats: pureStats,
+        dailyStats: dailyStats || {}
       });
     });
   } else {
@@ -332,7 +336,7 @@ async function replaceCards() {
   }
 
   localStorage.removeItem('pokerOriginHand');
-  canSelectCards = false; // ⬅️ zakázat výběr
+  canSelectCards = false;
   displayCards();
   replaceBtn.disabled = true;
   drawBtn.disabled = false;
@@ -356,7 +360,13 @@ async function replaceCards() {
   }
 
   score += finalPayout;
+
+  const today = new Date().toISOString().split('T')[0];
   pokerStats[evaluation] = (pokerStats[evaluation] || 0) + 1;
+  pokerStats.dailyStats = pokerStats.dailyStats || {};
+  pokerStats.dailyStats[today] = pokerStats.dailyStats[today] || {};
+  pokerStats.dailyStats[today][evaluation] = (pokerStats.dailyStats[today][evaluation] || 0) + 1;
+
   bet = getBet(score);
   saveData();
 
