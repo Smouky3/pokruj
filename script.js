@@ -206,6 +206,11 @@ function saveData() {
         bet,
         stats: pureStats,
         dailyStats: updatedDailyStats
+      })
+      .then(() => {
+        // po úspěšném uložení smažeme lokální denní statistiky,
+        // aby se příště ukládaly jen nové hry
+        delete pokerStats.dailyStats[today];
       });
     });
   } else {
