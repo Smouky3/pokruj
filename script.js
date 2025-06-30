@@ -376,13 +376,16 @@ async function replaceCards() {
 
   let finalPayout = payout;
 
-  if (evaluation === "Straight Flush") {
-    const jackpotPayout = await payoutJackpot();
-    finalPayout += jackpotPayout;
-    changeDisplay.textContent += ` + JACKPOT ${jackpotPayout}! 🎉`;
-  }
+if (evaluation === "Straight Flush") {
+  const jackpotPayout = await payoutJackpot();
+  finalPayout += jackpotPayout;
+  changeDisplay.textContent += ` + JACKPOT ${jackpotPayout}! 🎉`;
+}
 
-  score += finalPayout;
+// pokud je finalPayout záporné (prohra), nedělej žádnou změnu skóre
+if (finalPayout < 0) finalPayout = 0;
+
+score += finalPayout;
 
   const today = new Date().toISOString().split('T')[0];
 
