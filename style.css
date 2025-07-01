@@ -1,3 +1,4 @@
+/* === ZÁKLADNÍ RESET A TĚLO STRÁNKY === */
 html, body {
   height: 100%;
   margin: 0;
@@ -15,6 +16,7 @@ body {
   box-sizing: border-box;
 }
 
+/* === ODKAZ NA PROFIL === */
 .profile-link {
   position: fixed;
   top: 15px;
@@ -33,6 +35,7 @@ body {
   background-color: #4caf50;
 }
 
+/* === HLAVNÍ NADPIS === */
 .site-title {
   font-family: 'Poppins', 'Arial Black', Arial, sans-serif;
   font-weight: 900;
@@ -56,6 +59,7 @@ body {
   cursor: default;
 }
 
+/* === HLAVNÍ OBSAH A HERNÍ POLE === */
 .main-content {
   display: flex;
   justify-content: center;
@@ -80,7 +84,7 @@ body {
   flex-wrap: nowrap;
 }
 
-/* Pravý panel s jackpotem a tabulkou postupů */
+/* === PRAVÝ PANEL (Jackpot, Turnaje, Tabulky, Chat) === */
 .right-panel {
   position: fixed;
   top: 100px;
@@ -92,6 +96,7 @@ body {
   align-items: center;
 }
 
+/* === JACKPOT BOX === */
 .jackpot-box {
   width: 100%;
   max-width: 280px;
@@ -122,6 +127,7 @@ body {
   text-shadow: 0 0 6px #00ff00aa;
 }
 
+/* === TABULKY (Postup, Žebříček, Statistiky) === */
 #nextBetMilestoneTable,
 .leaderboard-table,
 .profile-stats-table {
@@ -167,6 +173,7 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* === KARTY === */
 .card {
   width: 80px;
   height: 110px;
@@ -194,6 +201,7 @@ body {
   position: relative;
 }
 
+/* === OBECNÁ TLAČÍTKA === */
 button {
   padding: 14px 28px;
   font-size: 22px;
@@ -215,7 +223,7 @@ button:hover:not(:disabled) {
   background-color: #45a049;
 }
 
-/* Skóre a výsledky */
+/* === SKÓRE A VÝSLEDKY === */
 .score-row {
   display: flex;
   justify-content: center;
@@ -240,7 +248,7 @@ button:hover:not(:disabled) {
   text-align: center;
 }
 
-/* Profil */
+/* === PROFIL KONTEJNER === */
 .profile-container {
   background: linear-gradient(135deg, #1b3a1b, #2e7d32);
   padding: 30px 40px;
@@ -266,7 +274,7 @@ button:hover:not(:disabled) {
   user-select: none;
 }
 
-/* Zpět */
+/* === ODKAZ ZPĚT === */
 .back-link {
   display: inline-block;
   margin-top: 30px;
@@ -281,7 +289,7 @@ button:hover:not(:disabled) {
   text-decoration: underline;
 }
 
-/* Chat */
+/* === CHAT BLOK === */
 .chat-container {
   position: fixed;
   bottom: 20px;
@@ -392,6 +400,7 @@ button:hover:not(:disabled) {
   filter: brightness(1.3);
 }
 
+/* === TURNAMENT BUTTON === */
 .tournament-btn {
   width: 100%;
   max-width: 280px;
@@ -399,69 +408,62 @@ button:hover:not(:disabled) {
   padding: 14px 0;
   font-size: 22px;
   font-weight: 700;
-  background-color: #2e7d32;
+  background-color: #1e3b1e;
   color: white;
-  border: none;
+  border: 2px solid #ffd700;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, border-color 0.3s;
   text-align: center;
 }
 .tournament-btn:hover {
-  background-color: #4caf50;
+  background-color: #256325;
+  border-color: #ffe066;
 }
 
-/* Denní úkoly */
+/* === DENNÍ ÚKOLY (TABULKA VÝZEV) === */
 .daily-tasks-table-container {
   position: fixed;
   left: 18px;
   bottom: 18px;
   z-index: 20;
-  max-width: 360px;   /* zvětšeno z 260px */
-  min-width: 300px;   /* zvětšeno z 210px */
+  max-width: 360px;
+  min-width: 300px;
   width: 100%;
 }
-
-/* Tabulka s chatovou zelenou barvou */
 .daily-tasks-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  background: #1e3b1e; /* stejná barva jako chat-messages */
+  background: #1e3b1e;
   border: 2px solid #ffd700;
   border-radius: 14px;
   box-shadow: 0 3px 10px #001c09b6;
   overflow: hidden;
   font-size: 13px;
 }
-
+/* Jednotná barva uvnitř tabulky */
 .daily-tasks-table th, .daily-tasks-table td {
   padding: 6px 6px;
   text-align: center;
   font-size: 13px;
   color: #e9ffd7;
+  background: #1e3b1e !important;
 }
-
-.daily-tasks-table th {
-  background: #256325;
-  font-size: 14px;
-  color: #ffd700;
-  font-weight: 700;
-  border-bottom: 1px solid #2a5d2a;
+/* Dělící čára pod záhlavím tabulky */
+.daily-tasks-table thead tr:nth-child(2) th {
+  border-bottom: 1.5px solid #ffd70044 !important;
 }
-
-/* Dělící čára mezi jednotlivými úkoly (řádky) */
-.daily-tasks-table tbody tr:not(:last-child) {
-  border-bottom: 1.5px solid #49c95866;
+/* Dělící čára mezi jednotlivými úkoly */
+.daily-tasks-table tbody tr:not(:last-child) td {
+  border-bottom: 1.5px solid #ffd70044;
 }
-
 .daily-tasks-title-cell {
   background: none !important;
   padding-bottom: 2px !important;
   border-bottom: none !important;
 }
-
 .daily-tasks-title {
   font-size: 18px;
   font-weight: bold;
@@ -472,7 +474,6 @@ button:hover:not(:disabled) {
   margin-top: 2px;
   line-height: 1.12;
 }
-
 .daily-tasks-info {
   font-size: 12px;
   color: #ffd700;
@@ -480,7 +481,6 @@ button:hover:not(:disabled) {
   margin-bottom: 0;
   font-weight: 500;
 }
-
 /* Dělící čára pod popiskem s odměnou */
 .daily-tasks-divider {
   border-bottom: 1.5px solid #ffd70044;
@@ -488,7 +488,6 @@ button:hover:not(:disabled) {
   margin: 7px 0 4px 0;
   height: 0;
 }
-
 .daily-tasks-progress-bg {
   width: 120px;
   height: 9px;
@@ -500,13 +499,11 @@ button:hover:not(:disabled) {
   display: flex;
   align-items: center;
 }
-
 .daily-tasks-progress-bar {
   height: 100%;
   background: linear-gradient(90deg, #ffd700 70%, #67ff57 100%);
   transition: width 0.5s;
 }
-
 .daily-tasks-completed {
   color: #baff77;
   font-weight: bold;
