@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Turnaje - Pokruj</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .tournaments-container {
+      background: linear-gradient(135deg, #1b3a1b, #2e7d32);
+      padding: 36px 28px 36px 28px;
+      border-radius: 20px;
+      max-width: 480px;
+      margin: 48px auto 60px auto;
+      box-shadow: 0 8px 20px rgba(0, 150, 0, 0.5), inset 0 0 30px rgba(46, 125, 50, 0.6);
+      color: #e0ffd8;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+    }
+    .tournaments-container h1 {
+      font-size: 38px;
+      font-weight: 900;
+      color: #fff9c4;
+      text-shadow: 0 0 8px #aaffaa, 0 0 20px #55aa55;
+      margin-bottom: 32px;
+    }
+    .tournament-list {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 24px;
+  flex-wrap: nowrap;  /* nikdy nezalomeno, kromě opravdu malých mobilů */
+}
+.tournament-box {
+  background: #204820;
+  border: 2.5px solid #ffd700;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px #111a;
+  padding: 18px 10px 14px 10px;
+  color: #fff;
+  width: 160px;
+  min-width: 120px;
+  max-width: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tournament-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffd700;
+  margin-bottom: 5px;
+  text-shadow: 0 0 4px #000a;
+  letter-spacing: 1px;
+}
+.tournament-entry {
+  font-size: 13px;
+  color: #ccffcc;
+  margin-bottom: 12px;
+}
+.register-btn {
+  background-color: #2e7d32;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 0;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 95%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  transition: background-color 0.2s;
+}
+.register-btn:hover {
+  background-color: #4caf50;
+}
+@media (max-width: 700px) {
+  .tournament-list {
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+}
+    .back-link {
+      display: inline-block;
+      margin-top: 16px;
+      color: #aaffaa;
+      font-weight: 700;
+      font-size: 18px;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .back-link:hover {
+      color: #ddffaa;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="tournaments-container">
+  <h1>Turnaje</h1>
+  <div class="tournament-list">
+    <div class="tournament-box">
+      <div class="tournament-name">T1</div>
+      <div class="tournament-entry">Vstup: 1 000 bodů skóre</div>
+      <button class="register-btn" onclick="alert('Registrace do T1 – herní logika bude doplněna.')">Registrovat</button>
+    </div>
+    <div class="tournament-box">
+      <div class="tournament-name">T2</div>
+      <div class="tournament-entry">Vstup: 5 000 bodů skóre</div>
+      <button class="register-btn" onclick="alert('Registrace do T2 – herní logika bude doplněna.')">Registrovat</button>
+    </div>
+    <div class="tournament-box">
+      <div class="tournament-name">T3</div>
+      <div class="tournament-entry">Vstup: 10 000 bodů skóre</div>
+      <button class="register-btn" onclick="alert('Registrace do T3 – herní logika bude doplněna.')">Registrovat</button>
+    </div>
+  </div>
+  <a href="index.html" class="back-link">Zpět do hry</a>
+</div>
+</body>
+</html>
