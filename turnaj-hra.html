@@ -486,7 +486,7 @@ async function showVyhodnoceni() {
     players.forEach(p => { if (!odmeny[p.uid]) odmeny[p.uid]=0; });
   } else {
     // 1. místo 60 %, 2. místo 20 %, 3. místo 10 %, zbytek 0 %
-    let pricePerc = [0.6, 0.2, 0.1];
+    let pricePerc = [0.7, 0.2, 0.1];
     let priceFor = [[],[],[]];
     for (let i=0;i<3;i++) {
       if (!sortedScores[i]) continue;
