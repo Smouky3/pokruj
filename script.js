@@ -510,13 +510,25 @@ db.collection("chat")
     snapshot.forEach(doc => {
       const data = doc.data();
       const time = data.timestamp?.toDate().toLocaleTimeString() || '';
-      messages.push(`
-  <div>
-    <span style="color:#666; font-size:12px;">${time}</span>
-    <strong style="margin-left: 6px;">${data.nickname || 'Hráč'}:</strong> ${data.message}
-  </div>
-`);
 
+      // ⬇️ ROZLIŠ systémové a běžné zprávy
+      if (data.type === "system" && data.text) {
+        // Systémová zpráva
+        messages.push(`
+          <div style="color:#92ff92; font-style:italic;">
+            <span style="color:#666; font-size:12px;">${time}</span>
+            <span style="margin-left: 6px;">${data.text}</span>
+          </div>
+        `);
+      } else {
+        // Běžná zpráva hráče
+        messages.push(`
+          <div>
+            <span style="color:#666; font-size:12px;">${time}</span>
+            <strong style="margin-left: 6px;">${data.nickname || 'Hráč'}:</strong> ${data.message || ''}
+          </div>
+        `);
+      }
     });
     chatMessages.innerHTML = messages.reverse().join('');
     chatMessages.scrollTop = chatMessages.scrollHeight;
