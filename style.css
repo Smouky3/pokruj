@@ -7,7 +7,6 @@ body {
   background-color: #2a5d2a;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: white;
-
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -44,24 +43,19 @@ body {
   text-align: center;
   margin: 40px 0 50px 0;
   user-select: none;
-
   -webkit-text-stroke: 2.5px #ffd700;
   text-stroke: 2.5px #ffd700;
-
   text-shadow:
     0 0 8px #ffd700cc,
     0 0 15px #ffea0044,
     0 2px 6px rgba(0, 0, 0, 0.7);
-
   transition: filter 0.3s ease;
 }
-
 .site-title:hover {
   filter: drop-shadow(0 0 20px #fff59dcc);
   cursor: default;
 }
 
-/* Hlavní obsah s herním polem vycentrovaným */
 .main-content {
   display: flex;
   justify-content: center;
@@ -70,7 +64,6 @@ body {
   margin: 0 auto;
   flex-grow: 1;
 }
-
 .game-left {
   flex: 1 1 auto;
   display: flex;
@@ -79,8 +72,6 @@ body {
   text-align: center;
   min-width: 400px;
 }
-
-/* Karty */
 .cards-row {
   display: flex;
   justify-content: center;
@@ -89,7 +80,7 @@ body {
   flex-wrap: nowrap;
 }
 
-/* Pravý panel s jackpotem a tabulkou postupů pod ním, menší, vycentrované */
+/* Pravý panel s jackpotem a tabulkou postupů */
 .right-panel {
   position: fixed;
   top: 100px;
@@ -98,7 +89,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  align-items: center; /* vycentrovat obsah */
+  align-items: center;
 }
 
 .jackpot-box {
@@ -114,10 +105,9 @@ body {
   text-align: center;
   user-select: none;
   padding: 12px 10px;
-  margin: 0 auto; /* zarovná střed stejně jako tabulky */
+  margin: 0 auto;
   box-sizing: border-box;
 }
-
 .jackpot-box .jackpot-title {
   font-size: 16px;
   font-weight: 700;
@@ -125,7 +115,6 @@ body {
   color: #ccffcc;
   text-shadow: 0 0 4px #55ff55;
 }
-
 .jackpot-box .jackpot-amount {
   font-size: 24px;
   font-weight: 800;
@@ -133,8 +122,9 @@ body {
   text-shadow: 0 0 6px #00ff00aa;
 }
 
-/* Tabulka postupů menší a vycentrovaná */
-#nextBetMilestoneTable {
+#nextBetMilestoneTable,
+.leaderboard-table,
+.profile-stats-table {
   width: 100%;
   max-width: 280px;
   border-collapse: collapse;
@@ -148,62 +138,35 @@ body {
   text-align: center;
   user-select: none;
 }
-
+.profile-stats-table {
+  max-width: 400px;
+  margin: 20px auto;
+}
+#nextBetMilestoneTable th, #nextBetMilestoneTable td,
+.leaderboard-table th, .leaderboard-table td,
+.profile-stats-table th, .profile-stats-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid #aaffaa88;
+}
 #nextBetMilestoneTable th,
-#nextBetMilestoneTable td {
-  padding: 5px 8px;
-  border-bottom: 1px solid #aaffaa88;
-}
-
-#nextBetMilestoneTable th {
-  background-color: rgba(170, 255, 170, 0.3);
-  font-weight: 700;
-}
-
-#nextBetMilestoneTable tbody tr:last-child td {
-  border-bottom: none;
-}
-
-/* Upravený žebříček hráčů - nyní stejný styl jako tabulka postupů */
-.leaderboard-table {
-  width: 100%;
-  max-width: 280px;
-  border-collapse: collapse;
-  background-color: rgba(170, 255, 170, 0.15);
-  border: 2px solid #aaffaa;
-  border-radius: 12px;
-  box-shadow: 0 0 8px #88cc88aa;
-  font-size: 12px;
-  color: #aaffaa;
-  font-weight: 600;
-  text-align: center;
-  user-select: none;
-  margin-top: 15px;
-}
-
 .leaderboard-table th,
-.leaderboard-table td {
-  padding: 5px 8px;
-  border-bottom: 1px solid #aaffaa88;
-}
-
-.leaderboard-table th {
+.profile-stats-table th {
   background-color: rgba(170, 255, 170, 0.3);
   font-weight: 700;
 }
-
-.leaderboard-table tbody tr:last-child td {
+#nextBetMilestoneTable tbody tr:last-child td,
+.leaderboard-table tbody tr:last-child td,
+.profile-stats-table tbody tr:last-child td {
   border-bottom: none;
 }
-
-.leaderboard-table tbody tr:hover td {
+.leaderboard-table tbody tr:hover td,
+.profile-stats-table tbody tr:hover td {
   background-color: #3a8f3a;
   color: #eaffea;
   cursor: default;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Ostatní styly karet, tlačítek atd. zůstávají stejné */
 .card {
   width: 80px;
   height: 110px;
@@ -223,7 +186,6 @@ body {
   box-sizing: border-box;
   border: 2px solid transparent;
 }
-
 .card.selected {
   box-shadow: 0 0 15px 3px #4caf50;
   border-color: #4caf50;
@@ -244,18 +206,16 @@ button {
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
   transition: background-color 0.3s;
 }
-
 button:disabled {
   background-color: #9e9e9e;
   cursor: default;
   box-shadow: none;
 }
-
 button:hover:not(:disabled) {
   background-color: #45a049;
 }
 
-/* --- PŮVODNÍ STYL PRO SKÓRE A VÝSLEDKY --- */
+/* Skóre a výsledky */
 .score-row {
   display: flex;
   justify-content: center;
@@ -266,7 +226,6 @@ button:hover:not(:disabled) {
   margin-top: 20px;
   margin-bottom: 12px;
 }
-
 #result {
   font-size: 26px;
   font-weight: 700;
@@ -274,7 +233,6 @@ button:hover:not(:disabled) {
   margin-bottom: 6px;
   text-align: center;
 }
-
 .change-score {
   font-size: 20px;
   font-style: italic;
@@ -282,7 +240,7 @@ button:hover:not(:disabled) {
   text-align: center;
 }
 
-/* --- STYL PRO PROFIL --- */
+/* Profil */
 .profile-container {
   background: linear-gradient(135deg, #1b3a1b, #2e7d32);
   padding: 30px 40px;
@@ -296,7 +254,6 @@ button:hover:not(:disabled) {
   color: #e0ffd8;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-
 .profile-container h1 {
   text-align: center;
   margin-bottom: 30px;
@@ -309,46 +266,7 @@ button:hover:not(:disabled) {
   user-select: none;
 }
 
-/* --- Nový sjednocený styl tabulky statistik v profilu --- */
-.profile-stats-table {
-  width: 100%;
-  max-width: 400px;
-  border-collapse: collapse;
-  background-color: rgba(170, 255, 170, 0.15);
-  border: 2px solid #aaffaa;
-  border-radius: 12px;
-  box-shadow: 0 0 8px #88cc88aa;
-  font-size: 12px;
-  color: #aaffaa;
-  font-weight: 600;
-  text-align: center;
-  user-select: none;
-  margin: 20px auto;
-}
-
-.profile-stats-table th,
-.profile-stats-table td {
-  padding: 6px 10px;
-  border-bottom: 1px solid #aaffaa88;
-}
-
-.profile-stats-table th {
-  background-color: rgba(170, 255, 170, 0.3);
-  font-weight: 700;
-}
-
-.profile-stats-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.profile-stats-table tbody tr:hover td {
-  background-color: #3a8f3a;
-  color: #eaffea;
-  cursor: default;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Odkaz zpět */
+/* Zpět */
 .back-link {
   display: inline-block;
   margin-top: 30px;
@@ -358,12 +276,12 @@ button:hover:not(:disabled) {
   text-decoration: none;
   transition: color 0.3s;
 }
-
 .back-link:hover {
   color: #ddffaa;
   text-decoration: underline;
 }
 
+/* Chat */
 .chat-container {
   position: fixed;
   bottom: 20px;
@@ -378,7 +296,6 @@ button:hover:not(:disabled) {
   z-index: 999;
   font-family: inherit;
 }
-
 .chat-messages {
   max-height: 200px;
   overflow-y: auto;
@@ -390,19 +307,16 @@ button:hover:not(:disabled) {
   border-radius: 6px;
   color: #e0f7e9;
 }
-
 .chat-messages div {
   margin: 6px 0;
   color: #e0f7e9;
   font-size: 13px;
   line-height: 1.4;
 }
-
 .chat-input-row {
   display: flex;
   gap: 8px;
 }
-
 #chatInput {
   flex: 1;
   padding: 6px 10px;
@@ -412,11 +326,9 @@ button:hover:not(:disabled) {
   background-color: #1e3b1e;
   color: #e0f7e9;
 }
-
 #chatInput::placeholder {
   color: #a0c0a0;
 }
-
 #chatSend {
   background-color: #3c8e3c;
   color: white;
@@ -427,31 +339,26 @@ button:hover:not(:disabled) {
   font-size: 14px;
   transition: background-color 0.3s ease;
 }
-
 #chatSend:hover {
   background-color: #2e6e2e;
 }
-
 .chat-messages::-webkit-scrollbar {
   width: 8px;
 }
-
 .chat-messages::-webkit-scrollbar-track {
-  background: #1e3b1e; /* tmavé pozadí posuvníku */
+  background: #1e3b1e;
   border-radius: 6px;
 }
-
 .chat-messages::-webkit-scrollbar-thumb {
-  background-color: #3c6e3c; /* tmavě zelená lišta */
+  background-color: #3c6e3c;
   border-radius: 6px;
 }
-
 .chat-messages::-webkit-scrollbar-thumb:hover {
-  background-color: #4caf50; /* světlejší při přejetí myší */
+  background-color: #4caf50;
 }
 
 #emojiToggle {
-  background-color: #3c8e3c;     /* stejná zelená jako tlačítko Odeslat */
+  background-color: #3c8e3c;
   color: white;
   border: none;
   padding: 6px 10px;
@@ -460,11 +367,9 @@ button:hover:not(:disabled) {
   font-size: 18px;
   transition: background-color 0.3s ease;
 }
-
 #emojiToggle:hover {
-  background-color: #388e3c;     /* stejná jako hover u Odeslat */
+  background-color: #388e3c;
 }
-
 .emoji-picker {
   position: absolute;
   bottom: 60px;
@@ -479,15 +384,14 @@ button:hover:not(:disabled) {
   color: #fff;
   user-select: none;
 }
-
 .emoji-picker span {
   cursor: pointer;
   margin: 4px;
 }
-
 .emoji-picker span:hover {
   filter: brightness(1.3);
 }
+
 .tournament-btn {
   width: 100%;
   max-width: 280px;
@@ -495,7 +399,7 @@ button:hover:not(:disabled) {
   padding: 14px 0;
   font-size: 22px;
   font-weight: 700;
-  background-color: #2e7d32;       /* Stejné jako Profil */
+  background-color: #2e7d32;
   color: white;
   border: none;
   border-radius: 8px;
@@ -505,5 +409,106 @@ button:hover:not(:disabled) {
   text-align: center;
 }
 .tournament-btn:hover {
-  background-color: #4caf50;       /* Stejné jako hover u Profil */
+  background-color: #4caf50;
+}
+
+/* Denní úkoly */
+.daily-tasks-table-container {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  z-index: 20;
+  max-width: 360px;   /* zvětšeno z 260px */
+  min-width: 300px;   /* zvětšeno z 210px */
+  width: 100%;
+}
+
+/* Tabulka s chatovou zelenou barvou */
+.daily-tasks-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #1e3b1e; /* stejná barva jako chat-messages */
+  border: 2px solid #ffd700;
+  border-radius: 14px;
+  box-shadow: 0 3px 10px #001c09b6;
+  overflow: hidden;
+  font-size: 13px;
+}
+
+.daily-tasks-table th, .daily-tasks-table td {
+  padding: 6px 6px;
+  text-align: center;
+  font-size: 13px;
+  color: #e9ffd7;
+}
+
+.daily-tasks-table th {
+  background: #256325;
+  font-size: 14px;
+  color: #ffd700;
+  font-weight: 700;
+  border-bottom: 1px solid #2a5d2a;
+}
+
+/* Dělící čára mezi jednotlivými úkoly (řádky) */
+.daily-tasks-table tbody tr:not(:last-child) {
+  border-bottom: 1.5px solid #49c95866;
+}
+
+.daily-tasks-title-cell {
+  background: none !important;
+  padding-bottom: 2px !important;
+  border-bottom: none !important;
+}
+
+.daily-tasks-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffd700;
+  letter-spacing: 1px;
+  margin-bottom: 1px;
+  text-shadow: 0 0 6px #1b3b19;
+  margin-top: 2px;
+  line-height: 1.12;
+}
+
+.daily-tasks-info {
+  font-size: 12px;
+  color: #ffd700;
+  margin-top: 1px;
+  margin-bottom: 0;
+  font-weight: 500;
+}
+
+/* Dělící čára pod popiskem s odměnou */
+.daily-tasks-divider {
+  border-bottom: 1.5px solid #ffd70044;
+  width: 100%;
+  margin: 7px 0 4px 0;
+  height: 0;
+}
+
+.daily-tasks-progress-bg {
+  width: 120px;
+  height: 9px;
+  background: #183e18;
+  border-radius: 5px;
+  margin: 0 auto;
+  overflow: hidden;
+  box-shadow: 0 1px 2px #111b;
+  display: flex;
+  align-items: center;
+}
+
+.daily-tasks-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #ffd700 70%, #67ff57 100%);
+  transition: width 0.5s;
+}
+
+.daily-tasks-completed {
+  color: #baff77;
+  font-weight: bold;
+  text-shadow: 0 0 5px #aaff55;
 }
