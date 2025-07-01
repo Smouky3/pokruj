@@ -1,9 +1,11 @@
+// ===================== ZÁKLADNÍ PROMĚNNÉ A PŘIPOJENÍ =====================
+
 const suits = ['♠', '♥', '♦', '♣'];
 const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 let deck = [];
 let hand = [];
 let selectedIndices = [];
-let canSelectCards = true; // ⬅️ Nová proměnná
+let canSelectCards = true;
 
 const cardsDiv = document.getElementById("cards");
 const drawBtn = document.getElementById("drawBtn");
@@ -13,10 +15,8 @@ const scoreDisplay = document.getElementById("score");
 const betDisplay = document.getElementById("bet");
 const changeDisplay = document.getElementById("change");
 const jackpotDisplay = document.getElementById("jackpotDisplay");
-
 const logoutBtn = document.getElementById('logoutBtn');
 const loginBtn = document.getElementById('loginBtn');
-
 const leaderboardBody = document.getElementById('leaderboardBody');
 
 let pokerStats = {};
@@ -66,12 +66,13 @@ async function payoutJackpot() {
   return payoutAmount;
 }
 
+// ===================== SÁZKY / SKÓRE MILESTONY =====================
+
 function getNextMilestones(score, count = 3) {
   const milestones = [
     50, 150, 300, 500, 800, 1200, 1700, 2300, 3000, 3800,
     4700, 5700, 6800, 8000, 9300, 10700, 12200, 13800, 15500, 17300
   ];
-
   const result = [];
   let idx = milestones.findIndex(m => score < m);
   if (idx === -1) {
@@ -95,6 +96,30 @@ function getNextMilestones(score, count = 3) {
     }
   }
   return result;
+}
+
+function getBet(score) {
+  if (score < 50) return 1;
+  if (score < 150) return 2;
+  if (score < 300) return 3;
+  if (score < 500) return 4;
+  if (score < 800) return 5;
+  if (score < 1200) return 6;
+  if (score < 1700) return 7;
+  if (score < 2300) return 8;
+  if (score < 3000) return 9;
+  if (score < 3800) return 10;
+  if (score < 4700) return 11;
+  if (score < 5700) return 12;
+  if (score < 6800) return 13;
+  if (score < 8000) return 14;
+  if (score < 9300) return 15;
+  if (score < 10700) return 16;
+  if (score < 12200) return 17;
+  if (score < 13800) return 18;
+  if (score < 15500) return 19;
+  if (score < 17300) return 20;
+  return 20 + Math.floor((score - 17300) / 2000);
 }
 
 function updateUI() {
@@ -129,26 +154,27 @@ function updateUI() {
   });
 }
 
+// ===================== AUTH / PROFIL / ŽEBŘÍČEK =====================
+
 auth.onAuthStateChanged(user => {
   const onGamePage = window.location.pathname.includes('index.html');
   const userInfo = document.getElementById('userInfo');
 
-    if (user) {
+  if (user) {
     if (logoutBtn) logoutBtn.style.display = 'inline-block';
     if (loginBtn) loginBtn.style.display = 'none';
 
     db.collection('users').doc(user.uid).get().then(doc => {
-    if (doc.exists) {
-    const data = doc.data();
-    const nickname = data.nickname || '???';
-    score = data.score ?? 20;
-    bet = data.bet ?? 1;
-    pokerStats = data.stats ?? {};
-    userInfo.style.display = 'inline-block';
-    userInfo.textContent = `Přihlášen: ${nickname}`;
-    updateUI();
-  }
-
+      if (doc.exists) {
+        const data = doc.data();
+        const nickname = data.nickname || '???';
+        score = data.score ?? 20;
+        bet = data.bet ?? 1;
+        pokerStats = data.stats ?? {};
+        userInfo.style.display = 'inline-block';
+        userInfo.textContent = `Přihlášen: ${nickname}`;
+        updateUI();
+      }
     }).catch(loadFromLocalStorage);
 
     if (typeof loadLeaderboard === "function") {
@@ -189,8 +215,6 @@ function saveData() {
       const todayServer = existingDailyStats[today] || {};
 
       const mergedToday = { ...todayServer };
-
-      // ✨ Přičíst hodnoty z klienta
       for (let key in todayClient) {
         mergedToday[key] = (mergedToday[key] || 0) + todayClient[key];
       }
@@ -208,8 +232,6 @@ function saveData() {
         dailyStats: updatedDailyStats
       })
       .then(() => {
-        // po úspěšném uložení smažeme lokální denní statistiky,
-        // aby se příště ukládaly jen nové hry
         delete pokerStats.dailyStats[today];
       });
     });
@@ -244,20 +266,9 @@ function loadLeaderboard() {
         const score = data.score || 0;
 
         const tr = document.createElement('tr');
-
-        const tdPos = document.createElement('td');
-        tdPos.textContent = position++;
-
-        const tdNick = document.createElement('td');
-        tdNick.textContent = nickname;
-
-        const tdScore = document.createElement('td');
-        tdScore.textContent = score;
-
-        tr.appendChild(tdPos);
-        tr.appendChild(tdNick);
-        tr.appendChild(tdScore);
-
+        tr.appendChild(Object.assign(document.createElement('td'), { textContent: position++ }));
+        tr.appendChild(Object.assign(document.createElement('td'), { textContent: nickname }));
+        tr.appendChild(Object.assign(document.createElement('td'), { textContent: score }));
         leaderboardBody.appendChild(tr);
       });
 
@@ -269,6 +280,8 @@ function loadLeaderboard() {
       leaderboardBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color: red;">Chyba při načítání: ${error.message}</td></tr>`;
     });
 }
+
+// ===================== KARTY =====================
 
 function createDeck() {
   deck = [];
@@ -288,14 +301,12 @@ function shuffleDeck() {
 
 function dealCards() {
   localStorage.removeItem('pokerOriginHand');
-
   createDeck();
   shuffleDeck();
   hand = deck.splice(0, 5);
   localStorage.setItem('pokerOriginHand', JSON.stringify(hand));
-
   selectedIndices = [];
-  canSelectCards = true; // ⬅️ povolit výběr
+  canSelectCards = true;
   displayCards();
   replaceBtn.disabled = false;
   drawBtn.disabled = true;
@@ -312,7 +323,7 @@ function displayCards() {
     if (selectedIndices.includes(index)) cardEl.classList.add("selected");
     cardEl.style.color = (card.suit === '♥' || card.suit === '♦') ? 'red' : 'black';
     cardEl.onclick = () => {
-      if (canSelectCards) toggleCard(index); // ⬅️ výběr pouze pokud povoleno
+      if (canSelectCards) toggleCard(index);
     };
     cardsDiv.appendChild(cardEl);
   });
@@ -327,31 +338,7 @@ function toggleCard(index) {
   displayCards();
 }
 
-function getBet(score) {
-  if (score < 50) return 1;
-  if (score < 150) return 2;
-  if (score < 300) return 3;
-  if (score < 500) return 4;
-  if (score < 800) return 5;
-  if (score < 1200) return 6;
-  if (score < 1700) return 7;
-  if (score < 2300) return 8;
-  if (score < 3000) return 9;
-  if (score < 3800) return 10;
-  if (score < 4700) return 11;
-  if (score < 5700) return 12;
-  if (score < 6800) return 13;
-  if (score < 8000) return 14;
-  if (score < 9300) return 15;
-  if (score < 10700) return 16;
-  if (score < 12200) return 17;
-  if (score < 13800) return 18;
-  if (score < 15500) return 19;
-  if (score < 17300) return 20;
-  return 20 + Math.floor((score - 17300) / 2000);
-}
-
-// ===== DENNÍ ÚKOLY (NEW) =====
+// ===================== DENNÍ ÚKOLY =====================
 
 const dailyTasks = [
   {
@@ -432,7 +419,7 @@ function renderDailyTasks(tasks) {
           ${progressBar}
         </td>
         <td>
-          ${completed ? `<span>✓ +${50*bet}</span>` : `+${50*bet}`}
+          ${completed ? `<span>✓ +${task.reward()}</span>` : `+${task.reward()}`}
         </td>
       </tr>
     `;
@@ -444,38 +431,45 @@ let winningStreak = 0;
 function updateDailyTasksAfterGame(evaluation) {
   const tasks = loadDailyTasks();
 
-  // 1. Odehrané hry
-  tasks.gamesPlayed.value++;
-  if (tasks.gamesPlayed.value >= 1000) tasks.gamesPlayed.completed = true;
-
-  // 2. Počet párů
-  if (evaluation === "Pár") {
-    tasks.pairs.value++;
-    if (tasks.pairs.value >= 500) tasks.pairs.completed = true;
-  }
-
-  // 3. Dva páry
-  if (evaluation === "Dva páry") {
-    tasks.twoPairs.value++;
-    if (tasks.twoPairs.value >= 300) tasks.twoPairs.completed = true;
-  }
-
-  // 4. Trojice
-  if (evaluation === "Trojice") {
-    tasks.trips.value++;
-    if (tasks.trips.value >= 200) tasks.trips.completed = true;
-  }
-
-  // 5. Výherní série
-  if (evaluation !== "Žádná kombinace") {
-    winningStreak++;
-  } else {
-    winningStreak = 0;
-  }
-  if (winningStreak > tasks.winningStreak10.value) {
-    tasks.winningStreak10.value = winningStreak;
-  }
-  if (tasks.winningStreak10.value >= 10) tasks.winningStreak10.completed = true;
+  // Úkoly podle definice v dailyTasks
+  dailyTasks.forEach(task => {
+    switch (task.key) {
+      case 'gamesPlayed':
+        tasks[task.key].value++;
+        if (tasks[task.key].value >= task.goal) tasks[task.key].completed = true;
+        break;
+      case 'pairs':
+        if (evaluation === "Pár") {
+          tasks[task.key].value++;
+          if (tasks[task.key].value >= task.goal) tasks[task.key].completed = true;
+        }
+        break;
+      case 'twoPairs':
+        if (evaluation === "Dva páry") {
+          tasks[task.key].value++;
+          if (tasks[task.key].value >= task.goal) tasks[task.key].completed = true;
+        }
+        break;
+      case 'trips':
+        if (evaluation === "Trojice") {
+          tasks[task.key].value++;
+          if (tasks[task.key].value >= task.goal) tasks[task.key].completed = true;
+        }
+        break;
+      case 'winningStreak10':
+        if (evaluation !== "Žádná kombinace") {
+          winningStreak++;
+        } else {
+          winningStreak = 0;
+        }
+        if (winningStreak > tasks[task.key].value) {
+          tasks[task.key].value = winningStreak;
+        }
+        if (tasks[task.key].value >= task.goal) tasks[task.key].completed = true;
+        break;
+      default: break;
+    }
+  });
 
   // Odměny
   dailyTasks.forEach(task => {
@@ -495,8 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderDailyTasks(loadDailyTasks());
 });
 
-// ====== KONEC DENNÍ ÚKOLY (NEW) ======
-
+// ===================== PRŮBĚH HRY =====================
 
 async function replaceCards() {
   for (let i = 0; i < hand.length; i++) {
@@ -529,20 +522,13 @@ async function replaceCards() {
     changeDisplay.textContent += ` + JACKPOT ${jackpotPayout}! 🎉`;
   }
 
-  // pokud je finalPayout záporné (prohra), nedělej žádnou změnu skóre
   if (finalPayout < 0) finalPayout = 0;
 
   score += finalPayout;
 
   const today = new Date().toISOString().split('T')[0];
-
-  // Zajistit oddělené součty
   pokerStats[evaluation] = (pokerStats[evaluation] || 0) + 1;
-
-  // Zajistit existenci dailyStats
   pokerStats.dailyStats = pokerStats.dailyStats || {};
-
-  // Zachovat předchozí hodnoty
   const todayStats = pokerStats.dailyStats[today] || {};
   todayStats[evaluation] = (todayStats[evaluation] || 0) + 1;
   pokerStats.dailyStats[today] = todayStats;
@@ -562,11 +548,11 @@ async function replaceCards() {
   updateUI();
   loadLeaderboard();
 
-  // === VYHODNOCENÍ DENNÍCH ÚKOLŮ ===
+  // Vyhodnocení denních úkolů
   updateDailyTasksAfterGame(evaluation);
 }
 
-// ... (zbytek tvého kódu ponechávám beze změn, chat atd.)
+// ===================== HODNOCENÍ HERNÍ KOMBINACE A VÝPLATY =====================
 
 function evaluateHand(hand) {
   const valueMap = {
@@ -612,42 +598,36 @@ function calculatePayout(evaluation) {
   return Math.round(multiplier * bet);
 }
 
+// ===================== OVLÁDÁNÍ =====================
+
 drawBtn.onclick = dealCards;
 replaceBtn.onclick = replaceCards;
-
 replaceBtn.disabled = true;
+
+// ===================== CHAT + EMOJI =====================
 
 const chatMessages = document.getElementById('chatMessages');
 const chatInput = document.getElementById('chatInput');
 const chatSend = document.getElementById('chatSend');
 
-// Odeslání zprávy tlačítkem
 chatSend.addEventListener('click', sendMessage);
-
-// Odeslání zprávy i klávesou Enter
 chatInput.addEventListener('keydown', function (e) {
-  if (e.key === 'Enter') {
-    sendMessage();
-  }
+  if (e.key === 'Enter') sendMessage();
 });
 
-// Funkce pro odeslání zprávy s přezdívkou
 function sendMessage() {
   const message = chatInput.value.trim();
   const user = auth.currentUser;
-
   if (message && user) {
     db.collection('users').doc(user.uid).get()
       .then(doc => {
         const nickname = doc.exists && doc.data().nickname ? doc.data().nickname : "Hráč";
-
         db.collection("chat").add({
           uid: user.uid,
           nickname: nickname,
           message: message,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
-
         chatInput.value = '';
       });
   }
@@ -662,10 +642,7 @@ db.collection("chat")
     snapshot.forEach(doc => {
       const data = doc.data();
       const time = data.timestamp?.toDate().toLocaleTimeString() || '';
-
-      // ⬇️ ROZLIŠ systémové a běžné zprávy
       if (data.type === "system" && data.text) {
-        // Systémová zpráva
         messages.push(`
           <div style="color:#92ff92; font-style:italic;">
             <span style="color:#666; font-size:12px;">${time}</span>
@@ -673,7 +650,6 @@ db.collection("chat")
           </div>
         `);
       } else {
-        // Běžná zpráva hráče
         messages.push(`
           <div>
             <span style="color:#666; font-size:12px;">${time}</span>
@@ -688,12 +664,9 @@ db.collection("chat")
 
 const emojiToggle = document.getElementById("emojiToggle");
 const emojiPicker = document.getElementById("emojiPicker");
-
 emojiToggle.addEventListener("click", () => {
   emojiPicker.style.display = emojiPicker.style.display === "none" ? "block" : "none";
 });
-
-// Vkládání smajlíků do inputu
 emojiPicker.addEventListener("click", (e) => {
   if (e.target.tagName === "SPAN") {
     chatInput.value += e.target.textContent;
