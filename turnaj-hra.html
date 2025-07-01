@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Turnaj - Pokruj</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #1b3a1b, #2e7d32);
+      min-height: 100vh;
+      color: #e0ffd8;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .turnaj-header {
+      text-align: center;
+      margin-top: 36px;
+      margin-bottom: 18px;
+      font-size: 31px;
+      font-weight: 900;
+      color: #fff9c4;
+      text-shadow: 0 0 8px #aaffaa, 0 0 20px #55aa55;
+      letter-spacing: 2px;
+    }
+    .turnaj-info {
+      text-align: center;
+      color: #aaffaa;
+      font-size: 16px;
+      margin-bottom: 18px;
+    }
+    .turnaj-gamebox {
+      margin: 0 auto 32px auto;
+      max-width: 540px;
+      padding: 20px 16px 16px 16px;
+      background: rgba(27,58,27, 0.97);
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0, 150, 0, 0.4);
+    }
+    .turnaj-status {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffd700;
+    }
+    .turnaj-btn-exit {
+      display: block;
+      margin: 20px auto 0 auto;
+      background: #2e7d32;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: background-color 0.3s;
+    }
+    .turnaj-btn-exit:hover {
+      background: #4caf50;
+    }
+    .cards-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .card {
+      background: #fff;
+      color: #222;
+      border: 2px solid #204820;
+      border-radius: 8px;
+      width: 46px;
+      height: 66px;
+      font-size: 22px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+      user-select: none;
+    }
+    .card.selected {
+      box-shadow: 0 0 8px #ffd700;
+      transform: translateY(-7px) scale(1.1);
+      border: 2.5px solid #ffd700;
+    }
+    .buttons-row {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .buttons-row button {
+      background: #2e7d32;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 20px;
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .buttons-row button:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+    .score-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      color: #fff9c4;
+      font-size: 17px;
+      padding: 0 10px;
+    }
+    #result {
+      text-align: center;
+      font-size: 16px;
+      color: #ffd700;
+      margin-bottom: 8px;
+      min-height: 22px;
+    }
+    #change {
+      text-align: center;
+      font-size: 17px;
+      margin-bottom: 3px;
+      min-height: 20px;
+    }
+    .vyhodnoceni-blok {
+      background: #263826;
+      border: 2px solid #ffd700;
+      border-radius: 14px;
+      padding: 20px;
+      color: #ffd700;
+      margin-top: 24px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      box-shadow: 0 3px 13px #0006;
+    }
+    .vyhodnoceni-blok table {
+      width: 100%;
+      margin-top: 10px;
+      color: #fff;
+      font-size: 16px;
+      border-collapse: collapse;
+    }
+    .vyhodnoceni-blok th, .vyhodnoceni-blok td {
+      padding: 5px 7px;
+      border-bottom: 1px solid #ffd70044;
+    }
+    .vyhodnoceni-blok th {
+      color: #ffd700;
+      background: #234623;
+    }
+    .vyhodnoceni-blok .me {
+      color: #aaffaa;
+      font-weight: 700;
+    }
+  </style>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNNf0kEABVjKYa7NzlGyhwUqCe9CCDKwA",
+      authDomain: "pokruj-f7785.firebaseapp.com",
+      projectId: "pokruj-f7785",
+      storageBucket: "pokruj-f7785.appspot.com",
+      messagingSenderId: "341436404573",
+      appId: "1:341436404573:web:b2f9495eea0e328df90eb4",
+      measurementId: "G-CV46BKJ882"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
+</head>
+<body>
+  <div class="turnaj-header">Turnaj <span id="turnajName"></span></div>
+  <div class="turnaj-info" id="turnajInfo">
+    Na odehrání 50 her máš 10 minut od začátku turnaje.<br>
+    Sázka je vždy 1 bod. Výhry za kombinace jako v běžné hře.
+  </div>
+  <div class="turnaj-gamebox" id="turnajGamebox" style="display:none;">
+    <div class="turnaj-status">
+      <span id="turnajHraCount">Hra 1 / 50</span> |
+      <span id="turnajTimer">Zbývá: 10:00</span>
+    </div>
+    <div id="cards" class="cards-row"></div>
+    <div class="buttons-row">
+      <button id="drawBtn">Rozdat karty</button>
+      <button id="replaceBtn" disabled>Vyměnit karty</button>
+    </div>
+    <div class="score-row">
+      <div>Skóre: <span id="score">0</span></div>
+      <div>Sázka: <span id="bet">1</span></div>
+    </div>
+    <div id="result"></div>
+    <div id="change" class="change-score"></div>
+  </div>
+  <div class="vyhodnoceni-blok" id="vyhodnoceniBlok" style="display:none;">
+    <h2>Výsledky turnaje</h2>
+    <div id="vyhodnoceniSummary"></div>
+    <table id="vyhodnoceniTable"></table>
+    <button class="turnaj-btn-exit" onclick="window.location.href='turnaje.html'">Zpět na turnaje</button>
+  </div>
+  <button class="turnaj-btn-exit" onclick="window.location.href='turnaje.html'" id="btnBack" style="display:none;">Ukončit turnaj</button>
+<script>
+function getQueryParam(name) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name) || "";
+}
+const tournamentType = getQueryParam('t');
+const tournamentId = getQueryParam('tid');
+document.getElementById('turnajName').textContent = tournamentType || '';
+
+const turnajInfo = document.getElementById('turnajInfo');
+const gamebox = document.getElementById('turnajGamebox');
+const vyhodnoceniBlok = document.getElementById('vyhodnoceniBlok');
+const vyhodnoceniTable = document.getElementById('vyhodnoceniTable');
+const vyhodnoceniSummary = document.getElementById('vyhodnoceniSummary');
+const btnBack = document.getElementById('btnBack');
+
+let endsAt = 0, startedAt = 0;
+let hra = 1, maxHer = 50, myScore = 0, bet = 1, timeLeftMs = 600000;
+let finished = false;
+let intervalId = null;
+
+// ---- Herní logika ----
+const suits = ['♠', '♥', '♦', '♣'];
+const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+let deck = [], hand = [], selectedIndices = [], canSelectCards = true;
+
+const cardsDiv = document.getElementById("cards");
+const drawBtn = document.getElementById("drawBtn");
+const replaceBtn = document.getElementById("replaceBtn");
+const result = document.getElementById("result");
+const scoreDisplay = document.getElementById("score");
+const betDisplay = document.getElementById("bet");
+const changeDisplay = document.getElementById("change");
+const turnajHraCount = document.getElementById("turnajHraCount");
+const turnajTimer = document.getElementById("turnajTimer");
+
+function createDeck() {
+  deck = [];
+  for (let suit of suits) for (let value of values) deck.push({ suit, value });
+}
+function shuffleDeck() {
+  for (let i = deck.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+}
+function dealCards() {
+  createDeck(); shuffleDeck();
+  hand = deck.splice(0, 5);
+  selectedIndices = [];
+  canSelectCards = true;
+  displayCards();
+  replaceBtn.disabled = false;
+  drawBtn.disabled = true;
+  result.textContent = '';
+  changeDisplay.textContent = '';
+}
+function displayCards() {
+  cardsDiv.innerHTML = '';
+  hand.forEach((card, index) => {
+    const cardEl = document.createElement("div");
+    cardEl.className = "card";
+    cardEl.textContent = `${card.value}${card.suit}`;
+    if (selectedIndices.includes(index)) cardEl.classList.add("selected");
+    cardEl.style.color = (card.suit === '♥' || card.suit === '♦') ? 'red' : 'black';
+    cardEl.onclick = () => { if (canSelectCards) toggleCard(index); };
+    cardsDiv.appendChild(cardEl);
+  });
+}
+function toggleCard(index) {
+  if (selectedIndices.includes(index)) {
+    selectedIndices = selectedIndices.filter(i => i !== index);
+  } else {
+    selectedIndices.push(index);
+  }
+  displayCards();
+}
+function replaceCards() {
+  for (let i = 0; i < hand.length; i++) {
+    if (!selectedIndices.includes(i)) {
+      hand[i] = deck.pop();
+    }
+  }
+  canSelectCards = false;
+  displayCards();
+  replaceBtn.disabled = true;
+  drawBtn.disabled = false;
+  const evaluation = evaluateHand(hand);
+  const payout = calculatePayout(evaluation);
+  myScore += payout;
+  scoreDisplay.textContent = myScore;
+  const sign = payout >= 0 ? "+" : "";
+  const evaluationText = evaluation === "Žádná kombinace" ? "Prohra" : evaluation;
+  result.textContent = `${evaluationText}! (${sign}${payout})`;
+  changeDisplay.textContent = '';
+  hra++;
+  updateTurnajStatus();
+  if (hra > maxHer) {
+    drawBtn.disabled = true;
+    replaceBtn.disabled = true;
+    endGame();
+  }
+}
+function updateTurnajStatus() {
+  turnajHraCount.textContent = `Hra ${Math.min(hra, maxHer)} / ${maxHer}`;
+}
+function evaluateHand(hand) {
+  const valueMap = {
+    '2': 2, '3': 3, '4': 4, '5': 5, '6': 6,
+    '7': 7, '8': 8, '9': 9, '10': 10,
+    'J': 11, 'Q': 12, 'K': 13, 'A': 14
+  };
+  let valuesNum = hand.map(card => valueMap[card.value]).sort((a, b) => a - b);
+  let suits = hand.map(card => card.suit);
+  let counts = {};
+  valuesNum.forEach(v => counts[v] = (counts[v] || 0) + 1);
+  let countValues = Object.values(counts).sort((a, b) => b - a);
+  let isFlush = suits.every(s => s === suits[0]);
+  let isStraight = valuesNum.every((v, i, a) => i === 0 || v === a[i - 1] + 1) ||
+    (JSON.stringify(valuesNum) === JSON.stringify([2, 3, 4, 5, 14]));
+  if (isStraight && isFlush && Math.max(...valuesNum) === 14) return "Royal Flush";
+  if (isStraight && isFlush) return "Straight Flush";
+  if (countValues[0] === 4) return "Poker (Čtveřice)";
+  if (countValues[0] === 3 && countValues[1] === 2) return "Full House";
+  if (isFlush) return "Flush";
+  if (isStraight) return "Straight";
+  if (countValues[0] === 3) return "Trojice";
+  if (countValues[0] === 2 && countValues[1] === 2) return "Dva páry";
+  if (countValues[0] === 2) return "Pár";
+  return "Žádná kombinace";
+}
+function calculatePayout(evaluation) {
+  const payoutTable = {
+    "Žádná kombinace": -1,
+    "Pár": 1.5,
+    "Dva páry": 2,
+    "Trojice": 4,
+    "Straight": 7,
+    "Flush": 12,
+    "Full House": 17,
+    "Poker (Čtveřice)": 25,
+    "Straight Flush": 40,
+    "Royal Flush": 70
+  };
+  let multiplier = payoutTable[evaluation] ?? 0;
+  return Math.round(multiplier * bet);
+}
+
+// --- Turnajové načtení & logika ---
+function msToMMSS(ms) {
+  if (ms < 0) return "00:00";
+  const min = Math.floor(ms / 60000);
+  const sec = Math.floor((ms % 60000) / 1000);
+  return `${min.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`;
+}
+
+async function loadTournamentData() {
+  if (!tournamentId) {
+    turnajInfo.textContent = "Turnaj nebyl nalezen.";
+    return;
+  }
+  const docRef = db.collection("tournaments").doc(tournamentId);
+  const doc = await docRef.get();
+  if (!doc.exists) {
+    turnajInfo.textContent = "Turnaj neexistuje nebo byl zrušen.";
+    return;
+  }
+  const data = doc.data();
+  startedAt = data.startedAt ? data.startedAt.toDate().getTime() : 0;
+  endsAt = data.endsAt ? data.endsAt.toDate().getTime() : 0;
+  updateTurnajTimer();
+  if (data.state === "active") {
+    startGame();
+  } else if (data.state === "waiting") {
+    turnajInfo.textContent = "Turnaj ještě nezačal. Vrať se později.";
+    gamebox.style.display = "none";
+  } else if (data.state === "finished") {
+    showVyhodnoceni();
+  }
+}
+function updateTurnajTimer() {
+  if (!endsAt) return;
+  let now = Date.now();
+  timeLeftMs = endsAt - now;
+  turnajTimer.textContent = "Zbývá: " + msToMMSS(timeLeftMs);
+  if (timeLeftMs <= 0 && !finished) {
+    endGame();
+  }
+}
+function startGame() {
+  gamebox.style.display = "";
+  btnBack.style.display = "";
+  scoreDisplay.textContent = myScore;
+  betDisplay.textContent = bet;
+  updateTurnajStatus();
+  drawBtn.disabled = false;
+  replaceBtn.disabled = true;
+  drawBtn.onclick = function() {
+    if (hra > maxHer) return;
+    dealCards();
+    updateTurnajStatus();
+  };
+  replaceBtn.onclick = replaceCards;
+  if (intervalId) clearInterval(intervalId);
+  intervalId = setInterval(updateTurnajTimer, 1000);
+}
+function endGame() {
+  if (finished) return;
+  finished = true;
+  drawBtn.disabled = true;
+  replaceBtn.disabled = true;
+  // Ulož skóre hráče
+  auth.onAuthStateChanged(async user => {
+    if (!user) return;
+    if (tournamentId) {
+      await db.collection("tournaments").doc(tournamentId)
+        .collection("players").doc(user.uid).set({
+          score: myScore,
+          finished: true,
+          finishedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      showVyhodnoceni();
+    }
+  });
+}
+
+// --- Vyhodnocení turnaje ---
+async function showVyhodnoceni() {
+  vyhodnoceniBlok.style.display = "";
+  gamebox.style.display = "none";
+  btnBack.style.display = "";
+  vyhodnoceniSummary.innerHTML = "Čekej na výsledky turnaje...";
+  vyhodnoceniTable.innerHTML = "";
+
+  // Načti všechny hráče a jejich skóre
+  const playersSnap = await db.collection("tournaments").doc(tournamentId).collection("players").get();
+  let players = [];
+  let meId = (auth.currentUser && auth.currentUser.uid) || "";
+  playersSnap.forEach(doc => {
+    let d = doc.data();
+    players.push({
+      uid: d.uid || doc.id,
+      nickname: d.nickname || "Hráč",
+      score: typeof d.score === "number" ? d.score : 0,
+      finished: d.finished || false
+    });
+  });
+  players.sort((a,b) => b.score - a.score);
+
+  // Výplatní logika (dle pravidel)
+  let vyhry = {};
+  let bank = 0;
+  const doc = await db.collection("tournaments").doc(tournamentId).get();
+  const entryFee = doc.data().entryFee || 0;
+  const totalPlayers = players.length;
+  bank = entryFee * totalPlayers;
+
+  // Výpočet pořadí (včetně dělení při shodě)
+  let sortedScores = Array.from(new Set(players.map(p => p.score))).sort((a,b)=>b-a);
+  let pozice = {};
+  sortedScores.forEach((score, idx) => {
+    let place = idx+1;
+    pozice[score] = place;
+  });
+  let odmeny = {};
+  if (totalPlayers === 2) {
+    // Vítěz bere vše, případná remíza = dělí bank
+    let topScore = sortedScores[0];
+    let topPlayers = players.filter(p => p.score === topScore);
+    let castka = bank / topPlayers.length;
+    topPlayers.forEach(p => odmeny[p.uid]=castka);
+    players.forEach(p => { if (!odmeny[p.uid]) odmeny[p.uid]=0; });
+  } else {
+    // 1. místo 60 %, 2. místo 20 %, 3. místo 10 %, zbytek 0 %
+    let pricePerc = [0.6, 0.2, 0.1];
+    let priceFor = [[],[],[]];
+    for (let i=0;i<3;i++) {
+      if (!sortedScores[i]) continue;
+      let ps = players.filter(p=>p.score===sortedScores[i]);
+      priceFor[i]=ps;
+    }
+    // Dělení při shodě
+    for(let i=0;i<3;i++) {
+      let amount = pricePerc[i]*bank;
+      let count = priceFor[i].length;
+      if(count){
+        let castka = amount/count;
+        priceFor[i].forEach(p=>odmeny[p.uid]=castka);
+      }
+    }
+    // Zbytek nic
+    players.forEach(p=>{ if(!odmeny[p.uid]) odmeny[p.uid]=0; });
+  }
+
+  // Tabulka výsledků
+  let table = `<tr><th>Pořadí</th><th>Přezdívka</th><th>Skóre</th><th>Výhra</th></tr>`;
+  players.forEach((p,i)=>{
+    let place = pozice[p.score];
+    let vyhra = Math.round(odmeny[p.uid]||0);
+    table+=`<tr${p.uid===meId?' class="me"':''}><td>${place}.</td><td>${p.nickname}</td><td>${p.score}</td><td>${vyhra>0?vyhra:'-'}</td></tr>`;
+  });
+  vyhodnoceniTable.innerHTML = table;
+  let myPlace = players.findIndex(p=>p.uid===meId)+1;
+  let myVyhra = Math.round(odmeny[meId]||0);
+  vyhodnoceniSummary.innerHTML = `Tvoje umístění: <b>${myPlace}.</b> / Výhra: <b>${myVyhra} bodů</b><br>Bank turnaje: ${bank} bodů`;
+}
+
+auth.onAuthStateChanged(loadTournamentData);
+</script>
+</body>
+</html>
