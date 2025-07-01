@@ -6,15 +6,20 @@
   <title>Turnaje - Pokruj</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    .tournaments-container {
+    body {
       background: linear-gradient(135deg, #1b3a1b, #2e7d32);
-      padding: 36px 28px 36px 28px;
-      border-radius: 20px;
-      max-width: 480px;
-      margin: 48px auto 60px auto;
-      box-shadow: 0 8px 20px rgba(0, 150, 0, 0.5), inset 0 0 30px rgba(46, 125, 50, 0.6);
       color: #e0ffd8;
+      min-height: 100vh;
+      margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .tournaments-container {
+      background: rgba(30, 60, 30, 0.93);
+      padding: 36px 20px 32px 20px;
+      border-radius: 20px;
+      max-width: 540px;
+      margin: 48px auto 60px auto;
+      box-shadow: 0 8px 20px rgba(0, 150, 0, 0.22), inset 0 0 18px rgba(46, 125, 50, 0.5);
       text-align: center;
     }
     .tournaments-container h1 {
@@ -25,69 +30,69 @@
       margin-bottom: 32px;
     }
     .tournament-list {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 18px;
-  margin-bottom: 24px;
-  flex-wrap: nowrap;  /* nikdy nezalomeno, kromě opravdu malých mobilů */
-}
-.tournament-box {
-  background: #204820;
-  border: 2.5px solid #ffd700;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px #111a;
-  padding: 18px 10px 14px 10px;
-  color: #fff;
-  width: 160px;
-  min-width: 120px;
-  max-width: 170px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.tournament-name {
-  font-size: 16px;
-  font-weight: bold;
-  color: #ffd700;
-  margin-bottom: 5px;
-  text-shadow: 0 0 4px #000a;
-  letter-spacing: 1px;
-}
-.tournament-entry {
-  font-size: 13px;
-  color: #ccffcc;
-  margin-bottom: 12px;
-}
-.register-btn {
-  background-color: #2e7d32;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 7px 0;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  width: 95%;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
-  transition: background-color 0.2s;
-}
-.register-btn:hover {
-  background-color: #4caf50;
-}
-@media (max-width: 700px) {
-  .tournament-list {
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-  }
-}
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 26px;
+      flex-wrap: nowrap;
+    }
+    .tournament-box {
+      background: #204820;
+      border: 2.5px solid #ffd700;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px #111a;
+      padding: 16px 8px 14px 8px;
+      color: #fff;
+      width: 150px;
+      min-width: 110px;
+      max-width: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .tournament-name {
+      font-size: 17px;
+      font-weight: bold;
+      color: #ffd700;
+      margin-bottom: 5px;
+      text-shadow: 0 0 4px #000a;
+      letter-spacing: 1px;
+    }
+    .tournament-entry {
+      font-size: 13px;
+      color: #ccffcc;
+      margin-bottom: 10px;
+    }
+    .tournament-status {
+      font-size: 13px;
+      color: #fff9c4;
+      margin-bottom: 7px;
+      white-space: pre-line;
+    }
+    .register-btn {
+      background-color: #2e7d32;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 0;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 95%;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      transition: background-color 0.2s;
+      margin-bottom: 3px;
+    }
+    .register-btn:hover {
+      background-color: #4caf50;
+    }
     .back-link {
       display: inline-block;
-      margin-top: 16px;
+      margin-top: 14px;
       color: #aaffaa;
       font-weight: 700;
-      font-size: 18px;
+      font-size: 17px;
       text-decoration: none;
       transition: color 0.3s;
     }
@@ -95,29 +100,309 @@
       color: #ddffaa;
       text-decoration: underline;
     }
+    @media (max-width: 700px) {
+      .tournament-list {
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+      }
+      .tournaments-container {
+        max-width: 98vw;
+        padding: 16px 3vw 24px 3vw;
+      }
+    }
   </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNNf0kEABVjKYa7NzlGyhwUqCe9CCDKwA",
+      authDomain: "pokruj-f7785.firebaseapp.com",
+      projectId: "pokruj-f7785",
+      storageBucket: "pokruj-f7785.appspot.com",
+      messagingSenderId: "341436404573",
+      appId: "1:341436404573:web:b2f9495eea0e328df90eb4",
+      measurementId: "G-CV46BKJ882"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
 </head>
 <body>
   <div class="tournaments-container">
-  <h1>Turnaje</h1>
-  <div class="tournament-list">
-    <div class="tournament-box">
-      <div class="tournament-name">T1</div>
-      <div class="tournament-entry">Vstup: 1 000 bodů skóre</div>
-      <button class="register-btn" onclick="alert('Registrace do T1 – herní logika bude doplněna.')">Registrovat</button>
+    <h1>Turnaje</h1>
+    <div class="tournament-list">
+      <div class="tournament-box" id="tournamentT1">
+        <div class="tournament-name">T1</div>
+        <div class="tournament-entry">Vstup: 1 000 bodů skóre</div>
+        <div class="tournament-status" id="tournamentT1Status"></div>
+        <button class="register-btn" id="registerT1Btn" style="display:none;">Registrovat</button>
+        <button class="register-btn" id="enterT1Btn" style="display:none;">Vstoupit do turnaje</button>
+      </div>
+      <div class="tournament-box" id="tournamentT2">
+        <div class="tournament-name">T2</div>
+        <div class="tournament-entry">Vstup: 5 000 bodů skóre</div>
+        <div class="tournament-status" id="tournamentT2Status"></div>
+        <button class="register-btn" id="registerT2Btn" style="display:none;">Registrovat</button>
+        <button class="register-btn" id="enterT2Btn" style="display:none;">Vstoupit do turnaje</button>
+      </div>
+      <div class="tournament-box" id="tournamentT3">
+        <div class="tournament-name">T3</div>
+        <div class="tournament-entry">Vstup: 10 000 bodů skóre</div>
+        <div class="tournament-status" id="tournamentT3Status"></div>
+        <button class="register-btn" id="registerT3Btn" style="display:none;">Registrovat</button>
+        <button class="register-btn" id="enterT3Btn" style="display:none;">Vstoupit do turnaje</button>
+      </div>
     </div>
-    <div class="tournament-box">
-      <div class="tournament-name">T2</div>
-      <div class="tournament-entry">Vstup: 5 000 bodů skóre</div>
-      <button class="register-btn" onclick="alert('Registrace do T2 – herní logika bude doplněna.')">Registrovat</button>
-    </div>
-    <div class="tournament-box">
-      <div class="tournament-name">T3</div>
-      <div class="tournament-entry">Vstup: 10 000 bodů skóre</div>
-      <button class="register-btn" onclick="alert('Registrace do T3 – herní logika bude doplněna.')">Registrovat</button>
-    </div>
+    <a href="index.html" class="back-link">Zpět do hry</a>
   </div>
-  <a href="index.html" class="back-link">Zpět do hry</a>
-</div>
+
+<script>
+// ===== Pomocná funkce na formátování času mm:ss =====
+function formatTimeLeft(ms) {
+  if (ms < 0) return "00:00";
+  const min = Math.floor(ms / 60000);
+  const sec = Math.floor((ms % 60000) / 1000);
+  return `${min.toString().padStart(2,"0")}:${sec.toString().padStart(2,"0")}`;
+}
+
+// ===== Nastavení turnajových bannerů T1, T2, T3 =====
+const TOURNAMENTS = [
+  { id: "T1", entryFee: 1000 },
+  { id: "T2", entryFee: 5000 },
+  { id: "T3", entryFee: 10000 }
+];
+
+TOURNAMENTS.forEach(tournament => {
+  setupTournamentBanner(tournament);
+});
+
+function setupTournamentBanner({id, entryFee}) {
+  const statusDiv = document.getElementById(`tournament${id}Status`);
+  const registerBtn = document.getElementById(`register${id}Btn`);
+  const enterBtn = document.getElementById(`enter${id}Btn`);
+
+  async function updateBanner() {
+    const user = auth.currentUser;
+    // Povol registraci pouze přihlášeným
+    if (!user) {
+      statusDiv.textContent = "Pro registraci se přihlaš.";
+      registerBtn.style.display = "";
+      registerBtn.onclick = () => alert("Musíš být přihlášen!");
+      enterBtn.style.display = "none";
+      return;
+    }
+
+    // Získej skóre uživatele pro případné zobrazení/omezení tlačítka
+    let userScore = 0, nickname = "Hráč";
+    try {
+      const userSnap = await db.collection("users").doc(user.uid).get();
+      if (userSnap.exists) {
+        const data = userSnap.data();
+        userScore = data.score || 0;
+        nickname = data.nickname || (user.displayName || user.email.split('@')[0]);
+      }
+    } catch(e) {}
+
+    const query = await db.collection("tournaments")
+      .where("type", "==", id)
+      .where("state", "in", ["waiting", "active"])
+      .orderBy("createdAt", "desc")
+      .limit(1).get();
+
+    if (query.empty) {
+      statusDiv.textContent = "Nikdo zatím nepřihlášen";
+      if (userScore < entryFee) {
+        registerBtn.style.display = "";
+        registerBtn.disabled = true;
+        registerBtn.textContent = `Chybí body (${userScore}/${entryFee})`;
+        registerBtn.onclick = null;
+      } else {
+        registerBtn.style.display = "";
+        registerBtn.disabled = false;
+        registerBtn.textContent = "Registrovat";
+        registerBtn.onclick = () => registerToTournament(id, entryFee);
+      }
+      enterBtn.style.display = "none";
+    } else {
+      const doc = query.docs[0];
+      const data = doc.data();
+      const now = Date.now();
+      const waitingUntil = data.waitingUntil ? data.waitingUntil.toDate().getTime() : 0;
+      const state = data.state;
+
+      // Načti hráče
+      const playersSnap = await db.collection("tournaments").doc(doc.id).collection("players").get();
+      const playersCount = playersSnap.size;
+      let isRegistered = false;
+      playersSnap.forEach(playerDoc => {
+        if (user && playerDoc.id === user.uid) isRegistered = true;
+      });
+
+      if (state === "waiting") {
+        const left = waitingUntil - now;
+        statusDiv.textContent = `Přihlášeno: ${playersCount} / min. 2 hráči\nČas do startu: ${formatTimeLeft(left)}`;
+        if (!isRegistered) {
+          if (userScore < entryFee) {
+            registerBtn.style.display = "";
+            registerBtn.disabled = true;
+            registerBtn.textContent = `Chybí body (${userScore}/${entryFee})`;
+            registerBtn.onclick = null;
+          } else {
+            registerBtn.style.display = "";
+            registerBtn.disabled = false;
+            registerBtn.textContent = "Registrovat";
+            registerBtn.onclick = () => registerToTournament(id, entryFee);
+          }
+          enterBtn.style.display = "none";
+        } else {
+          registerBtn.style.display = "none";
+          enterBtn.style.display = "none";
+          statusDiv.textContent += "\nČekáš na start turnaje...";
+        }
+        // ---- FÁZE 2: POČET REGISTROVANÝCH HRAČŮ >= 2 A UBĚHLO 15 MINUT => START ----
+        if (playersCount >= 2 && now >= waitingUntil && state === "waiting") {
+          // 1. Pro všechny hráče zkus strhnout body
+          const batch = db.batch();
+          let removedPlayers = [];
+          for (const playerDoc of playersSnap.docs) {
+            const userRef = db.collection("users").doc(playerDoc.id);
+            const userSnap = await userRef.get();
+            const userScoreHere = (userSnap.exists && userSnap.data().score) || 0;
+            const playerNickname = userSnap.exists && userSnap.data().nickname
+              ? userSnap.data().nickname
+              : playerDoc.id.substr(0, 8);
+            if (userScoreHere >= entryFee) {
+              batch.update(userRef, { score: userScoreHere - entryFee });
+            } else {
+              // Nemá dost bodů, vyřadit z turnaje a pošli systémovou zprávu
+              batch.delete(playerDoc.ref);
+              removedPlayers.push({ uid: playerDoc.id, nickname: playerNickname });
+            }
+          }
+          await batch.commit();
+          // Po batchi pošli zprávy do chatu (požadavek uživatele)
+          for (const pl of removedPlayers) {
+            await db.collection("chat").add({
+              text: `🔴 ${pl.nickname} neměl dost bodů pro vstup do turnaje ${id} při jeho startu a byl vyřazen.`,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+              type: "system"
+            });
+          }
+          // 2. Pokud zbylo alespoň 2 hráči, spusť turnaj, jinak turnaj zruš
+          const aktualniPlayersSnap = await db.collection("tournaments").doc(doc.id).collection("players").get();
+          if (aktualniPlayersSnap.size >= 2) {
+            await db.collection("tournaments").doc(doc.id).update({
+              state: "active",
+              startedAt: firebase.firestore.Timestamp.now(),
+              endsAt: firebase.firestore.Timestamp.fromDate(new Date(Date.now() + 10*60*1000))
+            });
+          } else {
+            await db.collection("tournaments").doc(doc.id).delete();
+            statusDiv.textContent = "Nebylo dost hráčů se skóre pro vstup, turnaj nebyl spuštěn.";
+            registerBtn.style.display = "";
+          }
+        }
+        // Pokud po 15 minutách <2 hráči, turnaj zrušit
+        if (playersCount < 2 && now >= waitingUntil && state === "waiting") {
+          await db.collection("tournaments").doc(doc.id).delete();
+          statusDiv.textContent = "Nebylo dost hráčů, turnaj nebyl spuštěn.";
+          registerBtn.style.display = "";
+        }
+      } else if (state === "active") {
+        const endsAt = data.endsAt ? data.endsAt.toDate().getTime() : 0;
+        const left = endsAt - now;
+        statusDiv.textContent = `Turnaj běží!\nČas do konce: ${formatTimeLeft(left)}\nPřihlášeno: ${playersCount}`;
+        if (isRegistered) {
+          registerBtn.style.display = "none";
+          enterBtn.style.display = "";
+          enterBtn.onclick = () => window.location.href = `turnaj-hra.html?t=${id}&tid=${doc.id}`;
+        } else {
+          registerBtn.style.display = "none";
+          enterBtn.style.display = "none";
+        }
+        if (left <= 0) {
+          await db.collection("tournaments").doc(doc.id).update({
+            state: "finished"
+          });
+          statusDiv.textContent = "Turnaj skončil! Výsledky budou brzy vyhodnoceny.";
+          registerBtn.style.display = "none";
+          enterBtn.style.display = "none";
+        }
+      } else if (state === "finished") {
+        statusDiv.innerHTML = `<b>Turnaj ukončen!</b><br><a href="turnaj-hra.html?t=${id}&tid=${doc.id}">Zobrazit výsledky</a>`;
+        registerBtn.style.display = "none";
+        enterBtn.style.display = "none";
+      }
+    }
+  }
+
+  // Refresh při přihlášení a pak každou sekundu
+  auth.onAuthStateChanged(updateBanner);
+  setInterval(updateBanner, 1000);
+  setTimeout(updateBanner, 500);
+}
+
+// ===== Registrace hráče do turnaje + odeslání zprávy do chatu =====
+async function registerToTournament(type, entryFee) {
+  const user = auth.currentUser;
+  if (!user) return alert("Musíš být přihlášen!");
+
+  // Načti skóre znovu a povol registraci jen pokud má body
+  const userSnap = await db.collection("users").doc(user.uid).get();
+  const userScore = userSnap.exists ? (userSnap.data().score || 0) : 0;
+  const nickname = userSnap.exists && userSnap.data().nickname
+    ? userSnap.data().nickname
+    : (user.displayName ? user.displayName : (user.email ? user.email.split('@')[0] : "Hráč"));
+  if (userScore < entryFee) {
+    alert(`Nemáš dostatek bodů pro vstup do tohoto turnaje! (${userScore} / ${entryFee})`);
+    return;
+  }
+
+  // Najdi nebo založ waiting turnaj
+  const now = Date.now();
+  let docRef;
+  const waitingQuery = await db.collection("tournaments")
+    .where("type", "==", type)
+    .where("state", "==", "waiting")
+    .orderBy("createdAt", "desc")
+    .limit(1).get();
+
+  if (waitingQuery.empty) {
+    // Nový turnaj
+    const waitingUntil = new Date(now + 15*60*1000);
+    docRef = db.collection("tournaments").doc();
+    await docRef.set({
+      type,
+      entryFee,
+      state: "waiting",
+      waitingUntil: firebase.firestore.Timestamp.fromDate(waitingUntil),
+      createdAt: firebase.firestore.Timestamp.now()
+    });
+  } else {
+    docRef = waitingQuery.docs[0].ref;
+  }
+
+  // Přidej hráče do subkolekce
+  await docRef.collection("players").doc(user.uid).set({
+    uid: user.uid,
+    nickname,
+    registeredAt: firebase.firestore.FieldValue.serverTimestamp(),
+    score: 0,
+    finished: false
+  }, { merge: true });
+
+  // ➕ ODESLAT ZPRÁVU DO CHATRU
+  await db.collection("chat").add({
+    text: `🟢 ${nickname} se zaregistroval do turnaje ${type}.`,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    type: "system"
+  });
+}
+</script>
 </body>
 </html>
