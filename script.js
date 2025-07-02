@@ -355,14 +355,14 @@ const dailyTasks = [
   },
   {
     key: 'twoPairs',
-    label: '200x dvě dvojice',
-    goal: 200,
+    label: '300x dvě dvojice',
+    goal: 300,
     reward: () => 50 * bet
   },
   {
     key: 'trips',
-    label: '100x trojice',
-    goal: 100,
+    label: '200x trojice',
+    goal: 200,
     reward: () => 50 * bet
   },
   {
