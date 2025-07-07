@@ -52,6 +52,7 @@ registerBtn.onclick = () => {
         nickname: nickname,
         score: 20,
         bet: 1,
+        chips: 0,
         jackpot: 0,
         stats: {}
       }).then(() => {
