@@ -508,3 +508,18 @@ button:hover:not(:disabled) {
   font-weight: bold;
   text-shadow: 0 0 5px #aaff55;
 }
+.chips-row {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffd700;
+  margin: 0 0 8px 0;
+  text-align: left;
+  padding-left: 0;
+}
+@media (max-width: 600px) {
+  .score-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
