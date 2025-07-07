@@ -24,6 +24,9 @@ let score = 20;
 let bet = 1;
 let jackpot = 0;
 
+let chips = 0;
+const chipsDisplay = document.getElementById('chips');
+
 const jackpotDocRef = db.collection('game').doc('jackpot');
 
 jackpotDocRef.onSnapshot(doc => {
@@ -127,6 +130,7 @@ function updateUI() {
   betDisplay.textContent = bet;
   jackpotDisplay.textContent = jackpot;
   changeDisplay.textContent = '';
+  chipsDisplay.textContent = chips;
 
   const milestoneBody = document.getElementById('nextBetMilestoneBody');
   milestoneBody.innerHTML = '';
@@ -170,6 +174,7 @@ auth.onAuthStateChanged(user => {
         const nickname = data.nickname || '???';
         score = data.score ?? 20;
         bet = data.bet ?? 1;
+        chips = data.chips ?? 0;
         pokerStats = data.stats ?? {};
         userInfo.style.display = 'inline-block';
         userInfo.textContent = `Přihlášen: ${nickname}`;
@@ -228,6 +233,7 @@ function saveData() {
         nickname,
         score,
         bet,
+        chips,
         stats: pureStats,
         dailyStats: updatedDailyStats
       })
@@ -534,7 +540,14 @@ async function replaceCards() {
   pokerStats.dailyStats[today] = todayStats;
 
   bet = getBet(score);
-  saveData();
+  if (!pokerStats.gamesPlayed) pokerStats.gamesPlayed = 0;
+pokerStats.gamesPlayed++;
+if (pokerStats.gamesPlayed % 100 === 0) {
+  chips++;
+  changeDisplay.textContent = "+1 žeton za 100 her!";
+}
+updateUI();
+saveData();
 
   scoreDisplay.textContent = score;
   betDisplay.textContent = bet;
