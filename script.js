@@ -212,6 +212,7 @@ function loadFromLocalStorage() {
   score = parseInt(localStorage.getItem("pokerScore")) || 20;
   bet = parseInt(localStorage.getItem("pokerBet")) || 1;
   pokerStats = JSON.parse(localStorage.getItem("pokerStats")) || {};
+  betBonus = parseInt(localStorage.getItem("betBonus")) || 0;   // <--- DOPLŇ TENTO ŘÁDEK!
   updateUI();
 }
 
@@ -257,6 +258,7 @@ function saveData() {
     localStorage.setItem("pokerScore", score);
     localStorage.setItem("pokerBet", bet);
     localStorage.setItem("pokerStats", JSON.stringify(pokerStats));
+    localStorage.setItem("betBonus", betBonus); // <-- Ukládá trvale i do localStorage!
   }
 }
 
@@ -698,17 +700,29 @@ emojiPicker.addEventListener("click", (e) => {
     chatInput.focus();
   }
 });
-// Otevření/zavření minihry
+function updateBetBonusStats() {
+  const statsDiv = document.getElementById('betBonusStats');
+  if (statsDiv) {
+    statsDiv.innerHTML =
+      `<span>🪙 Žetony: <strong>${chips}</strong></span>
+       <span>+ k sázce: <strong>${betBonus}</strong></span>`;
+  }
+}
+
 betBonusLink.onclick = () => {
   betBonusModal.style.display = "flex";
   coveredCard.style.display = "flex";
   revealedCard.style.display = "none";
   betBonusInfo.textContent = "Za 5 žetonů odhalíš kartu a můžeš získat trvalý bonus k sázce!";
   revealCardBtn.disabled = false;
+  updateBetBonusStats();
 };
 closeBetBonusBtn.onclick = () => {
   betBonusModal.style.display = "none";
 };
+
+// ... Ve funkci, kde odkryješ kartu, na konec vždy přidej:
+updateBetBonusStats();
 
 // Kartová minihra
 const bonusCardValues = [
@@ -735,32 +749,38 @@ revealCardBtn.onclick = () => {
   }
   chips -= 5;
   updateUI();
-  saveData();
 
-  // Náhodná karta
+  // Náhodná karta...
   const c = bonusCardValues[Math.floor(Math.random()*bonusCardValues.length)];
   const s = bonusCardSuits[Math.floor(Math.random()*bonusCardSuits.length)];
   const bonus = c.bonus;
   const cardTxt = `${c.value}${s}`;
-  
-  coveredCard.style.display = "none";
-  revealedCard.style.display = "block";
-  revealedCard.textContent = `${cardTxt} ➔ +${bonus} k sázce!`;
 
-  // Navýšit trvale bonus
+  coveredCard.style.display = "none";
+  revealedCard.style.display = "flex";
+  revealedCard.innerHTML = "";
+
+  const miniCardEl = document.createElement("div");
+  miniCardEl.className = "card";
+  miniCardEl.style.width = "75px";
+  miniCardEl.style.height = "110px";
+  miniCardEl.style.fontSize = "38px";
+  miniCardEl.style.display = "flex";
+  miniCardEl.style.justifyContent = "center";
+  miniCardEl.style.alignItems = "center";
+  miniCardEl.style.margin = "0 auto";
+  miniCardEl.style.userSelect = "none";
+  miniCardEl.textContent = cardTxt;
+  miniCardEl.style.color = (s === '♥' || s === '♦') ? 'red' : 'black';
+
+  revealedCard.appendChild(miniCardEl);
+
+  // Zvýšení bonusu
   betBonus += bonus;
+  saveData();
+  updateBetBonusStats();    // <-- tady
+
   betBonusInfo.textContent = `Získáváš trvalý bonus: +${bonus} k sázce!`;
 
-  // Uložení bonusu k uživateli
-  const user = auth.currentUser;
-  if (user) {
-    db.collection('users').doc(user.uid).set({
-      betBonus: betBonus
-    }, { merge: true });
-  } else {
-    localStorage.setItem('betBonus', betBonus);
-  }
-
   updateUI();
-  revealCardBtn.disabled = true;
 };
