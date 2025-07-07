@@ -19,6 +19,15 @@ const logoutBtn = document.getElementById('logoutBtn');
 const loginBtn = document.getElementById('loginBtn');
 const leaderboardBody = document.getElementById('leaderboardBody');
 
+let betBonus = 0; // bonus k sázce
+const betBonusLink = document.getElementById('betBonusLink');
+const betBonusModal = document.getElementById('betBonusModal');
+const revealCardBtn = document.getElementById('revealCardBtn');
+const closeBetBonusBtn = document.getElementById('closeBetBonusBtn');
+const coveredCard = document.getElementById('coveredCard');
+const revealedCard = document.getElementById('revealedCard');
+const betBonusInfo = document.getElementById('betBonusInfo');
+
 let pokerStats = {};
 let score = 20;
 let bet = 1;
@@ -127,7 +136,7 @@ function getBet(score) {
 
 function updateUI() {
   scoreDisplay.textContent = score;
-  betDisplay.textContent = bet;
+  betDisplay.textContent = bet + (betBonus > 0 ? ` (+${betBonus})` : '');
   jackpotDisplay.textContent = jackpot;
   changeDisplay.textContent = '';
   chipsDisplay.textContent = chips;
@@ -175,6 +184,8 @@ auth.onAuthStateChanged(user => {
         score = data.score ?? 20;
         bet = data.bet ?? 1;
         chips = data.chips ?? 0;
+        betBonus = data.betBonus ?? 0;
+        updateUI();
         pokerStats = data.stats ?? {};
         userInfo.style.display = 'inline-block';
         userInfo.textContent = `Přihlášen: ${nickname}`;
@@ -234,6 +245,7 @@ function saveData() {
         score,
         bet,
         chips,
+        betBonus,
         stats: pureStats,
         dailyStats: updatedDailyStats
       })
@@ -608,7 +620,7 @@ function calculatePayout(evaluation) {
     "Royal Flush": 70
   };
   let multiplier = payoutTable[evaluation] ?? 0;
-  return Math.round(multiplier * bet);
+  return Math.round(multiplier * (bet + betBonus));
 }
 
 // ===================== OVLÁDÁNÍ =====================
@@ -686,3 +698,69 @@ emojiPicker.addEventListener("click", (e) => {
     chatInput.focus();
   }
 });
+// Otevření/zavření minihry
+betBonusLink.onclick = () => {
+  betBonusModal.style.display = "flex";
+  coveredCard.style.display = "flex";
+  revealedCard.style.display = "none";
+  betBonusInfo.textContent = "Za 5 žetonů odhalíš kartu a můžeš získat trvalý bonus k sázce!";
+  revealCardBtn.disabled = false;
+};
+closeBetBonusBtn.onclick = () => {
+  betBonusModal.style.display = "none";
+};
+
+// Kartová minihra
+const bonusCardValues = [
+  { value: "2", bonus: 0 },
+  { value: "3", bonus: 0 },
+  { value: "4", bonus: 0 },
+  { value: "5", bonus: 0 },
+  { value: "6", bonus: 1 },
+  { value: "7", bonus: 1 },
+  { value: "8", bonus: 1 },
+  { value: "9", bonus: 1 },
+  { value: "10", bonus: 1 },
+  { value: "J", bonus: 2 },
+  { value: "Q", bonus: 3 },
+  { value: "K", bonus: 4 },
+  { value: "A", bonus: 5 }
+];
+const bonusCardSuits = ["♠","♥","♦","♣"];
+
+revealCardBtn.onclick = () => {
+  if (chips < 5) {
+    betBonusInfo.textContent = "Nemáš dost žetonů!";
+    return;
+  }
+  chips -= 5;
+  updateUI();
+  saveData();
+
+  // Náhodná karta
+  const c = bonusCardValues[Math.floor(Math.random()*bonusCardValues.length)];
+  const s = bonusCardSuits[Math.floor(Math.random()*bonusCardSuits.length)];
+  const bonus = c.bonus;
+  const cardTxt = `${c.value}${s}`;
+  
+  coveredCard.style.display = "none";
+  revealedCard.style.display = "block";
+  revealedCard.textContent = `${cardTxt} ➔ +${bonus} k sázce!`;
+
+  // Navýšit trvale bonus
+  betBonus += bonus;
+  betBonusInfo.textContent = `Získáváš trvalý bonus: +${bonus} k sázce!`;
+
+  // Uložení bonusu k uživateli
+  const user = auth.currentUser;
+  if (user) {
+    db.collection('users').doc(user.uid).set({
+      betBonus: betBonus
+    }, { merge: true });
+  } else {
+    localStorage.setItem('betBonus', betBonus);
+  }
+
+  updateUI();
+  revealCardBtn.disabled = true;
+};
